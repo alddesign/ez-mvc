@@ -1,0 +1,20 @@
+{
+    "name": "alddesign/dice-them-words",
+    "description": "Dice them Words",
+    "type": "project",
+    "autoload": 
+    {
+        "psr-4": 
+        {
+            "Alddesign\\DiceThemWords\\System\\": "system/",
+            "Alddesign\\DiceThemWords\\Controllers\\": "app/controllers",
+            "Alddesign\\DiceThemWords\\Models\\": "app/models",
+            "Alddesign\\DiceThemWords\\": "app/"
+        }
+    },
+    "require": 
+    {
+        "php": ">=7.3",
+        "cboden/ratchet": "^0.4"
+    }
+}
