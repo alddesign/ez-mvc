@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace Alddesign\DiceThemWords\System;
+namespace Alddesign\EzMvc\System;
 
 abstract class Router
 {
@@ -10,8 +10,8 @@ abstract class Router
     private static $action = "";
     private static $id = "";
     private static $params = [];
-    private const APP_NAMESPACE = "Alddesign\\DiceThemWords\\";
-    private const CONTROLLER_NAMESPACE = "Alddesign\\DiceThemWords\\Controllers\\";
+    private const APP_NAMESPACE = "Alddesign\\EzMvc\\";
+    private const CONTROLLER_NAMESPACE = "Alddesign\\EzMvc\\Controllers\\";
 
     public static function routeRequest()
     {

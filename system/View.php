@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace Alddesign\DiceThemWords\System;
+namespace Alddesign\EzMvc\System;
 
 use Exception;
 
@@ -10,7 +10,7 @@ class View
     public $isRootView = false;
     /** @var string */
     public $path = "";
-    /** @var \DiceThemWords\View[] */
+    /** @var View[] */
     public $parentViews = [];
     /** @var string */
     public $name = "";
@@ -40,7 +40,7 @@ class View
         $this->data = $data;
     }
 
-    /** @return \DiceThemWords\View */
+    /** @return \EzMvc\View */
     public static function createRoot(string $name, array $data = [])
     {
         $view = new View($name, $data);
@@ -53,26 +53,26 @@ class View
         return $view;
     }
 
-    /** @return \DiceThemWords\View */
-    public static function createChild(string $name, $parent, array $data = [])
+    /** @return \EzMvc\View */
+    public static function createChild(string $name, $parentView, array $data = [])
     {
         $view = new View($name, $data);
 
         $view->isRootView = false;
-        $view->path = $parent->path.'/'.$name;
-        $view->parentViews = array_merge($parent->parentViews, [$view]);
+        $view->path = $parentView->path.'/'.$name;
+        $view->parentViews = array_merge($parentView->parentViews, [$view]);
         $view->isRootView = false;
 
         return $view;
     }
 
-    /** @return \DiceThemWords\View */
+    /** @return \EzMvc\View */
     public function getRootView()
     {
         return $this->parentViews[0];
     }
 
-    /** @return \DiceThemWords\View */
+    /** @return \EzMvc\View */
     public function getParentView(int $level = 0)
     {
         $c = count($this->parentViews) - 1;

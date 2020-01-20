@@ -1,88 +1,55 @@
 <?php
 declare(strict_types = 1);
-namespace Alddesign\DiceThemWords\Models;
+namespace Alddesign\EzMvc\Models;
 
-use Alddesign\DiceThemWords\System\Helper;
-use Alddesign\DiceThemWords\System\Model;
+use Alddesign\EzMvc\System\Model;
 use \PDO;
 
 abstract class DefaultModel extends Model
 {
-    public static function hasWord(string $word)
+    /** @return array|bool */
+    public static function getProducts()
     {
-        $statement = self::getPDO()->prepare('SELECT COUNT(*) FROM "words" WHERE "value" = :value;');
-        $statement->bindValue(':value', mb_strtolower($word));
+        /*
+        Use the PDO object to access your database (defined in system/system.config.php)
+        */
+        $pdo = self::getPDO();
 
-        return $statement->execute() === true ? ($statement->fetchColumn() === '1') : false;
+        $query = 'SELECT * FROM products;';
+        $statement = $pdo->prepare($query);
+        if($statement->execute())
+        {
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        return false;
     }
 
-    private static function getUser(string $id, string $email, int $active = null)
+    /** @return array|bool */
+    public static function getProduct($id)
     {
-        $id = mb_strtolower($id);
-        
-        if(!Helper::e($email))
-        {
-            if($active === null)
-            {
-                $query = 'SELECT * FROM users WHERE email = ?;';
-                $params = [$email];
-            }
-            else
-            {
-                $query = 'SELECT * FROM users WHERE email = ? AND active = ?;';
-                $params = [$email, $active];
-            }
-        }
-        if(!Helper::e($id))
-        {
-            if($active === null)
-            {
-                $query = 'SELECT * FROM users WHERE id = ?;';
-                $params = [$id];
-            }
-            else
-            {
-                $query = 'SELECT * FROM users WHERE id = ? AND active = ?;';
-                $params = [$id, $active];
-            }
-        }
+        /** @var PDO */
+        $pdo = self::getPDO();
 
-        $statement = self::getPDO()->prepare($query);
+        $query = 'SELECT * FROM products WHERE id = ?;';
+        $params = [$id];
+        $statement = $pdo->prepare($query);
         if($statement->execute($params))
         {
             return $statement->fetch(PDO::FETCH_ASSOC);
         }
 
-        $errorInfo = self::getPDO()->errorInfo();
         return false;
     }
 
-    public static function getUserPerMail(string $email, int $active = null)
+    /**
+     * Update data
+     * @return bool
+     */
+    public static function setProductActiveInactive(int $id, int $active)
     {
-        return self::getUser("", $email, $active);
-    }
-
-    public static function getUserPerId(string $id, int $active = null)
-    {
-        return self::getUser($id, "", $active);
-    }
-
-    public static function createUser(string $id, string $email, string $passwordHash, string $activationCode)
-    {
-        $id = mb_strtolower($id);
-
-        $statement = self::getPDO()->prepare('INSERT INTO users (id,password,email,active,activation_code,admin) VALUES (?,?,?,?,?,?);');
-        $params = [$id, $passwordHash, $email, 0, $activationCode,0];
-
-        return $statement->execute($params);   
-    }
-
-    public static function activateUser(string $id)
-    {
-        $id = mb_strtolower($id);
-
-        $statement = self::getPDO()->prepare('UPDATE users SET active = ?, activation_code = ? WHERE id = ?;');
-        $params = [1, "", $id];
+        $statement = self::getPDO()->prepare('UPDATE products SET active = ? WHERE id = ?;');
+        $params = [$active, $id];
 
         return $statement->execute($params);   
     }

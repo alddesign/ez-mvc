@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace Alddesign\DiceThemWords\System;
+namespace Alddesign\EzMvc\System;
 
 abstract class Helper
 {
