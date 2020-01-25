@@ -210,16 +210,15 @@ abstract class Helper
 	/** @return string */
 	public static function url(string $url)
 	{
-		$baseUrl = Config::system("base-url");
-		$urlPos = mb_strpos($url, $baseUrl);
+		$isAbsoluteUrl = parse_url($url, PHP_URL_SCHEME) !== null; //Check if url starts with http:// for example
 		
-		if($urlPos === 0)
+		if($isAbsoluteUrl)
 		{
 			return $url;
 		}
 		else
 		{
-			return self::removeTrailingSlash($baseUrl) . self::addStartingSlash($url);
+			return self::removeTrailingSlash(Config::system("base-url")) . self::addStartingSlash($url);
 		}
 	}
 

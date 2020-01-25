@@ -1,6 +1,7 @@
 <?php 
 namespace Alddesign\EzMvc;
 use Alddesign\EzMvc\System\Config;
+use Alddesign\EzMvc\System\View;
 ?>
 <!DOCTYPE html>
 <html>
@@ -9,4 +10,5 @@ use Alddesign\EzMvc\System\Config;
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title><?php echo Config::system("app-name") ?></title>
     </head>
-    <body>
+    <body style="padding: 50px 0 0 0;">
+    <?php View::createChild("title-bar", $this)->render(); ?> 

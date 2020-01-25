@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 namespace Alddesign\EzMvc\Models;
 
+use Alddesign\EzMvc\System\Helper;
 use Alddesign\EzMvc\System\Model;
 use \PDO;
 
@@ -14,15 +15,17 @@ abstract class DefaultModel extends Model
         Use the PDO object to access your database (defined in system/system.config.php)
         */
         $pdo = self::getPDO();
-
-        $query = 'SELECT * FROM products;';
-        $statement = $pdo->prepare($query);
-        if($statement->execute())
+        $result = $pdo->query('SELECT * FROM products;', PDO::FETCH_ASSOC);
+        
+        if($result === false)
         {
-            return $statement->fetchAll(PDO::FETCH_ASSOC);
+            return [];
+        }
+        else
+        {
+            return $result;
         }
 
-        return false;
     }
 
     /** @return array|bool */
@@ -52,5 +55,21 @@ abstract class DefaultModel extends Model
         $params = [$active, $id];
 
         return $statement->execute($params);   
+    }
+
+        /**
+     * Update data
+     * @return bool
+     */
+    public static function addProduct(int $id, string $name, float $price, int $active = 0)
+    {
+        $statement = self::getPDO()->prepare('INSERT INTO products (id,name,price,active) VALUES(?,?,?,?)');
+
+        if(!$statement->execute([$id, $name, $price, $active]))
+        {
+            return self::formatErrorInfo($statement->errorInfo(), "Error while creating new Product");
+        } 
+
+        return true;
     }
 }

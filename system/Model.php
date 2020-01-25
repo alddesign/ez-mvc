@@ -3,12 +3,16 @@ declare(strict_types = 1);
 namespace Alddesign\EzMvc\System;
 
 use Exception;
-use \PDO;
+use PDO;
+use PDOQuery;
+use PDOStatement;
 
 abstract class Model
 {
-    /** @var \PDO */
-    private static $Pdo = null;
+    /** @var PDO */
+    private static $pdo = null;
+    /** @var PDOStatement */
+    private static $statement = null;
 
     private static function connect()
     {
@@ -33,24 +37,30 @@ abstract class Model
             default : Helper::ex('Unsupported DB driver "%s".', Config::system("db-driver"));
         }
 
-        self::$Pdo = new PDO($dsn, Config::system("db-user"), Config::system("db-password"), Config::system("db-options", null));
-        self::$Pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        self::$pdo = new PDO($dsn, Config::system("db-user"), Config::system("db-password"), Config::system("db-options", null));
+        self::$pdo->setAttribute(PDO::ATTR_ERRMODE, Config::system("db-error-mode", PDO::ERRMODE_SILENT));
     }
 
-    /** @return \PDO */
-    protected static function getPDO()
+    /** @return PDO */
+    protected static function getPdo()
     {
-        if(self::$Pdo === null)
+        if(self::$pdo === null)
         {
             self::connect();
         }
         
-        return self::$Pdo;
+        return self::$pdo;
     }
 
-    /** @return array */
-    protected static function getErrorInfo()
-    {        
-        return self::$Pdo->errorInfo();
+    protected static function formatErrorInfo(array $errorInfo)
+    {
+        if($errorInfo[0] === "00000")
+        {
+            return "";
+        }
+        else
+        {
+            return sprintf('Error during Database operation: %s-%s "%s".', strval($errorInfo[0]), strval($errorInfo[1]), strval($errorInfo[2]));
+        }
     }
 }
