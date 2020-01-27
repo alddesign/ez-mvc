@@ -1,14 +1,14 @@
 {
     "name": "alddesign/ez-mvc",
-    "description": "Dice them Words",
+    "description": "ez-mvc is an easy PHP framework for developing applications",
     "type": "project",
     "autoload": 
     {
         "psr-4": 
         {
             "Alddesign\\EzMvc\\System\\": "system/",
-            "Alddesign\\EzMvc\\Controllers\\": "app/controllers",
-            "Alddesign\\EzMvc\\Models\\": "app/models",
+            "Alddesign\\EzMvc\\Controllers\\": "app/controllers/",
+            "Alddesign\\EzMvc\\Models\\": "app/models/",
             "Alddesign\\EzMvc\\": "app/"
         }
     },
