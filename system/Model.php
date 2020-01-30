@@ -11,8 +11,6 @@ abstract class Model
 {
     /** @var PDO */
     private static $pdo = null;
-    /** @var PDOStatement */
-    private static $statement = null;
 
     private static function connect()
     {
