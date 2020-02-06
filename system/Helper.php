@@ -163,51 +163,72 @@ abstract class Helper
 		}
 	}
 
-	public static function addTrailingSlash(string $url)
+	/**
+	 * Adds a trailing slash to an url, path or whatever if it doesnt exist
+	 * @return string
+	 */
+	public static function addTrailingSlash(string $value)
 	{
-		$url = strval($url);
-		if($url === "") 
+		$value = strval($value);
+		if($value === '') 
 		{
-			return "/";
+			return '/';
 		}
 
-		return mb_substr($url, mb_strlen($url) - 1, 1) === "/" ? $url : $url . "/";
+		return mb_substr($value, mb_strlen($value) - 1, 1) === '/' ? $value : $value . '/';
 	}
 
-	public static function removeTrailingSlash(string $url)
+	/**
+	 * Removes the trailing slash of an url, path or whatever if there is one
+	 * @return string
+	 */
+	public static function removeTrailingSlash(string $value)
 	{
-		$url = strval($url);
-		if($url === "" || $url === "/") 
+		$value = strval($value);
+		if($value === '' || $value === '/') 
 		{
-			return "";
+			return '';
 		}
 
-		return mb_substr($url, mb_strlen($url) - 1, 1) === "/" ? mb_substr($url, 0, mb_strlen($url) - 1) : $url;
+		return mb_substr($value, mb_strlen($value) - 1, 1) === '/' ? mb_substr($value, 0, mb_strlen($value) - 1) : $value;
 	}
 
-	public static function addStartingSlash(string $url)
+	/**
+	 * Adds a starting slash to an url, path or whatever if it doesnt exist
+	 * @return string
+	 */
+	public static function addStartingSlash(string $value)
 	{
-		$url = strval($url);
-		if($url === "") 
+		$value = strval($value);
+		if($value === '') 
 		{
-			return "/";
+			return '/';
 		}
 
-		return mb_substr($url, 0, 1) === "/" ? $url : "/". $url;
+		return mb_substr($value, 0, 1) === '/' ? $value : '/'. $value;
 	}
 
-	public static function removeStartingSlash(string $url)
+	/**
+	 * Removes the starting slash of an url, path or whatever if there is one
+	 * @return string
+	 */
+	public static function removeStartingSlash(string $value)
 	{
-		$url = strval($url);
-		if($url === "" || $url === "/") 
+		$value = strval($value);
+		if($value === '' || $value === '/') 
 		{
-			return "";
+			return '';
 		}
 
-		return mb_substr($url, 0, 1) === "/" ? mb_substr($url, 1) : $url;
+		return mb_substr($value, 0, 1) === '/' ? mb_substr($value, 1) : $value;
 	}
 
-	/** @return string */
+	/**
+	 * Converts relative urls to absolte urls (based on base-url). Already absolute urls stay untouched.
+	 * @example: $mainUrl = Helper::url("/Main/index");
+	 * 
+	 * @return string
+	 */
 	public static function url(string $url)
 	{
 		$isAbsoluteUrl = parse_url($url, PHP_URL_SCHEME) !== null; //Check if url starts with http:// for example
@@ -222,13 +243,21 @@ abstract class Helper
 		}
 	}
 
-	/** @return void */
+	/**
+	 * Converts and echoes relative urls to absolte urls (based on base-url). Already absolute urls stay untouched.
+	 * @example: Helper::echoUrl("/Main/index");
+	 * 
+	 * @return void
+	 */
 	public static function echoUrl(string $url)
 	{
 		echo self::url($url);
 	}
 
-	/** @return bool */
+	/** 
+	 * Checks if a $_GET request variable exists and stores its value in $outVar.
+	 * @return bool FALSE if variable exists, otherwise FALSE
+	 */
 	public static function get(string $name, &$outVar, $default = "")
 	{
 		if(!isset($_GET[$name]) || Helper::e($_GET[$name]))
@@ -241,7 +270,10 @@ abstract class Helper
 		return true;
 	}
 
-	/** @return bool */
+	/** 
+	 * Checks if a $_POST request variable exists and stores its value in $outVar.
+	 * @return bool FALSE if variable exists, otherwise FALSE
+	 */
 	public static function post(string $name, &$outVar, $default = "")
 	{
 		if(!isset($_POST[$name]) || Helper::e($_POST[$name]))
@@ -254,7 +286,10 @@ abstract class Helper
 		return true;
 	}
 
-	/** @return bool */
+	/** 
+	 * Checks if a session variable exists and stores its value in $outVar.
+	 * @return bool FALSE if variable exists, otherwise FALSE
+	 */
 	public static function session(string $name, &$outVar, $default = "")
 	{
 		if(!isset($_SESSION[$name]) || Helper::e($_SESSION[$name]))
@@ -267,9 +302,19 @@ abstract class Helper
 		return true;
 	}
 
-	public static function redirect(string $url)
+	/**
+	 * Redirects to given url. 
+	 * 
+	 * @return bool FALSE if redirect is not possible, otherwise redirect happens
+	 */
+	public static function redirect(string $url, bool $literlUrl)
 	{
-		$url = self::url($url);
+		if(headers_sent())
+		{
+			return false;
+		}
+
+		$url = $literlUrl ? $url : self::url($url);
 
 		header('Location: ' . $url);
 		die();
