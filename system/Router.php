@@ -2,16 +2,19 @@
 declare(strict_types = 1);
 namespace Alddesign\EzMvc\System;
 
+/**
+ * Routing requests. 
+ * 
+ * The URL pattern is http://<base-url>/[<controller>]/[<action>]/[<id>]/[<param 1>]/[<param 2>]/[<param n>]
+ */
 abstract class Router
 {
-    //The ulr pattern is {controller}/{action}/{id}/{param}/{param}
-    private static $originalRequestUrl = "";
-    private static $controller = "";
-    private static $action = "";
-    private static $id = "";
+    private static $originalRequestUrl = '';
+    private static $controller = '';
+    private static $action = '';
+    private static $id = '';
     private static $params = [];
-    private const APP_NAMESPACE = "Alddesign\\EzMvc\\";
-    private const CONTROLLER_NAMESPACE = "Alddesign\\EzMvc\\Controllers\\";
+    private const CONTROLLER_NAMESPACE = 'Alddesign\\EzMvc\\Controllers\\';
 
     public static function routeRequest()
     {
@@ -42,7 +45,7 @@ abstract class Router
     private static function resolveRequestUrl()
     {      
         //Request Url:
-        $url = parse_url(Helper::addTrailingSlash("http://dummy.com" . urldecode($_SERVER["REQUEST_URI"])));
+        $url = parse_url(Helper::addTrailingSlash("http://example.com" . urldecode($_SERVER["REQUEST_URI"])));
         $urlPath = isset($url["path"]) ? $url["path"] : "/";
         self::$originalRequestUrl = $urlPath;
 
