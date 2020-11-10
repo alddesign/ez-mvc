@@ -307,14 +307,14 @@ abstract class Helper
 	 * 
 	 * @return bool FALSE if redirect is not possible, otherwise redirect happens
 	 */
-	public static function redirect(string $url, bool $literlUrl)
+	public static function redirect(string $url, bool $literalUrl = false)
 	{
 		if(headers_sent())
 		{
 			return false;
 		}
 
-		$url = $literlUrl ? $url : self::url($url);
+		$url = $literalUrl ? $url : self::url($url);
 
 		header('Location: ' . $url);
 		die();
