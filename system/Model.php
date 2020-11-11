@@ -7,6 +7,9 @@ use PDO;
 use PDOQuery;
 use PDOStatement;
 
+/**
+ * The model handles the DB connetion
+ */
 abstract class Model
 {
     /** @var PDO */
@@ -47,19 +50,30 @@ abstract class Model
         self::$pdo->setAttribute(PDO::ATTR_ERRMODE, Config::system("db-error-mode", PDO::ERRMODE_SILENT));
     }
 
-    /** @return string */
-    protected static function delimiter(string $value)
+    /**
+     * Encloses a value between the DB spcific field & table name delimiters. 
+     * @param string $value
+     * 
+     * @return string
+     */
+    protected static function delimit(string $value)
     {
         return sprintf('%s%s%s', self::$delimiters[0], $value, self::$delimiters[1]);
     }
 
-    /** @return array */
+    /**
+     * Returns the DB spcific field & table name delimiters.
+     * @return string[]
+     */
     protected static function getDelimiters()
     {
         return self::$delimiters;
     }
 
-    /** @return PDO */
+    /**
+     * Connets to the DB and returns the PDO object.
+     * @return PDO
+     */
     protected static function getPdo()
     {
         if(self::$pdo === null)
@@ -70,6 +84,13 @@ abstract class Model
         return self::$pdo;
     }
 
+    /**
+     * Formats the PDO errorInfo array as readable text.
+     * 
+     * @param array $errorInfo
+     * 
+     * @return string
+     */
     protected static function formatErrorInfo(array $errorInfo)
     {
         if($errorInfo[0] === "00000")

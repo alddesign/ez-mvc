@@ -4,6 +4,9 @@ namespace Alddesign\EzMvc\System;
 
 use Exception;
 
+/**
+ * View are used to display data.
+ */
 class View
 {
     /** @var bool */
@@ -19,6 +22,12 @@ class View
 
     private const VIEWPATH = __DIR__."/../app/views/";
 
+    /**
+     * Creates a new View
+     * 
+     * @param string $name
+     * @param array $data
+     */
     private function __construct(string $name, array $data = [])
     {
         if(!is_string($name) || !preg_match('/^[a-zA-Z0-9_-]+$/', $name))
@@ -40,7 +49,13 @@ class View
         $this->data = $data;
     }
 
-    /** @return \EzMvc\View */
+    /**
+     * Creates a root view. A root can have subsidiary "child views". So the root view is the very "inner" part of a page, while child views are outer parts like a header, footer, menu...
+     * @param string $name
+     * @param array $data
+     * 
+     * @return View
+     */
     public static function createRoot(string $name, array $data = [])
     {
         $view = new View($name, $data);
@@ -53,7 +68,14 @@ class View
         return $view;
     }
 
-    /** @return \EzMvc\View */
+    /**
+     * Creates a child view. Child views can be included into a root view or even other child views.
+     * @param string $name
+     * @param View The view in which this child view is included
+     * @param array $data
+     * 
+     * @return View
+     */
     public static function createChild(string $name, $parentView, array $data = [])
     {
         $view = new View($name, $data);
@@ -66,13 +88,23 @@ class View
         return $view;
     }
 
-    /** @return \EzMvc\View */
+    /**
+     * Returns the root view for a child view.
+     * 
+     * @return View
+     */
     public function getRootView()
     {
         return $this->parentViews[0];
     }
 
-    /** @return \EzMvc\View */
+    /**
+     * Returns the parent view for this child view. This can be the root view or other child views in the hierachy.
+     * 
+     * @param int $level Specifiy this level to get a parent view based on the hierarchy of your root + child views. 0 = direct parent, 1 = parent of parent,...
+     * 
+     * @return View
+     */
     public function getParentView(int $level = 0)
     {
         $c = count($this->parentViews) - 1;
@@ -81,6 +113,11 @@ class View
         return $this->parentViews[$c - $level];
     }
 
+    /**
+     * Echos this view to the browser.
+     * 
+     * @return void
+     */
     public function render()
     {
         extract($this->data);

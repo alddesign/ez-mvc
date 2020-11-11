@@ -13,9 +13,9 @@ use Alddesign\EzMvc\System\View;
 
 <table>
     <tr>
-        <th>id</th>
-        <th>name</th>
-        <th>price</th>
+        <th><?php echo Config::get("captions.id"); ?></th>
+        <th><?php echo Config::get("captions.name"); ?></th>
+        <th><?php echo Config::get("captions.price"); ?></th>
         <th> </th>
         <th> </th>
     </tr>
@@ -29,7 +29,7 @@ use Alddesign\EzMvc\System\View;
         <tr>
             <td><?php echo $id; ?></td>
             <td><?php echo $product["name"]; ?></td>
-            <td><?php echo $product["price"]; ?>$</td>
+            <td><?php echo $product["price"]; ?></td>
             <?php if($product["active"] === "1"): ?>
                 <td><span style="color: green;">active</span></td>
                 <td><a href="<?php echo $deactivateUrl ?>">deactivate product</a></td>

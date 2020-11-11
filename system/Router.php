@@ -16,6 +16,12 @@ abstract class Router
     private static $params = [];
     private const CONTROLLER_NAMESPACE = 'Alddesign\\EzMvc\\Controllers\\';
 
+
+    /**
+     * Resolves the request url and call the corrsponding Controller Action.
+     * 
+     * @return void
+     */
     public static function routeRequest()
     {
         self::resolveRequestUrl();
@@ -40,7 +46,9 @@ abstract class Router
     }
 
     /**
-     * Resolves request url into $action, $id and $params.
+     * Splits request url into $action, $id and $params.
+     * 
+     * @return void
      */
     private static function resolveRequestUrl()
     {      
@@ -50,7 +58,7 @@ abstract class Router
         self::$originalRequestUrl = $urlPath;
 
         //Base Url:
-        $baseUrl = parse_url(Helper::addTrailingSlash(Config::system("base-url")));
+        $baseUrl = parse_url(Helper::addTrailingSlash((string)Config::system("base-url")));
         $baseUrlPath = isset($baseUrl["path"]) ? $baseUrl["path"] : "/";
 
         //Strip base url path from request url path:
