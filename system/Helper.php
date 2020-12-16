@@ -11,97 +11,98 @@ abstract class Helper
 	 * 
 	 * ```
 	 * //Example usage:
-	 * $something = ['cars' => ['audi','bmw'], 'nothing' => (object)['name' => 'Mario', 'age' => 34]];
-	 * Helper::xout($something);  
+	 * Helper::xout(['cars' => ['audi','bmw'], 'nothing' => (object)['name' => 'Mario', 'age' => 34]]);  
 	 * ```
 	 * 
 	 * @param mixed $value The variable to print out
 	 * @param bool $dontDie Default = false. If set to true the script will not be aborted after execution of this function.
+	 * @return void
 	 */
-	public static function xout($value, bool $dontDie = false)
+	public static function xout($value, bool $dontDie = false, bool $initCall = true)
 	{
-		self::xoutInternal($value, $dontDie, true);
-	}
-
-	/** @ignore */
-	private static function xoutInternal($value, bool $dontDie, bool $initCall)
-	{
-		$result = $initCall ? '<div id="xout-container" style="font-family: Courier New; font-weight: bold; font-size: 15px;">' : '';
-		
-		if(gettype($value) === 'array')
+		//You can define your own syntax coloring here.
+		$baseColor = 'black';
+		$objectClassColor = 'gray';
+		$arrayTypeColor = 'blue';
+		$objectTypeColor = 'blue';
+		$stringTypeColor = 'red';
+		$integerTypeColor = 'orange';
+		$doubleTypeColor = 'teal';
+		$resourceTypeColor = 'purple';
+		$resourceClosedTypeColor = 'plum';
+		$booleanTypeColor = 'green';
+		$nullTypeColor = 'gray';
+	
+		$result = $initCall ? '<div id="xout-container" style="font-family: Courier New; font-weight: bold; font-size: 15px; color:'.$baseColor.';">' : '';
+	
+		$isSimpleVar = false;
+		$valueType = gettype($value);
+		switch($valueType)
 		{
-			$isSimpleVar = false;
-			$result .= '<span>ARRAY</span><br />'.htmlspecialchars('[');
-			$result .= '<ul style="list-style-type: none; margin: 0; padding: 0 0 0 20px;">';
+			case 'array' : $result .= '<span>ARRAY</span><br />'.htmlspecialchars('['); break;
+			case 'object' : $result .= '<span>OBJECT</span> <span style="color:'.$objectClassColor.';">' . get_class($value) . '</span><br />'.htmlspecialchars('('); break;
+			default : $value = [$value]; $isSimpleVar = true; break;
 		}
-		if(gettype($value) === 'object')
-		{
-			$isSimpleVar = false;
-			$result .= '<span>OBJECT</span> <span style="color:grey;">' . get_class($value) . '</span><br />'.htmlspecialchars('(');
-			$result .= '<ul style="list-style-type: none; margin: 0; padding: 0 0 0 20px;">';
-		}
-		if(gettype($value) !== 'array' && gettype($value) !== 'object')
-		{
-			$isSimpleVar = true;
-			$result .= '<ul style="list-style-type: none; margin: 0; padding: 0;">';
-			$value = [$value];
-		}
-		
+	
+		$result .= '<ul style="list-style-type: none; margin: 0;">';
+	
 		foreach ($value as $key => $val)
 		{
-			if (gettype($val) === 'array' || gettype($val) === 'object')
+			$valType = gettype($val);
+			if ($valType === 'array' || $valType === 'object')
 			{
-				if (gettype($val) === 'array')
+				if ($valueType === 'array')
 				{
-					$result .= '<li><span style="color:blue;">[' . htmlspecialchars(strval($key)) . ']</span><b style="color:black;"> '.htmlspecialchars('=>').' </b><span>' . self::xoutInternal($val, $dontDie, false) . '</span></li>';
+					$result .= '<li><span style="color:'.$arrayTypeColor.';">[' . htmlspecialchars(strval($key)) . ']</span><b style="color:'.$baseColor.';"> '.htmlspecialchars('=>').' </b><span>' . self::xout($val, $dontDie, false) . '</span></li>';
 				}
-				if (gettype($val) === 'object')
+				if ($valueType === 'object')
 				{
-					$result .= '<li><span style="color:blue;">' . htmlspecialchars(strval($key)) . '</span><b style="color:black;"> '.htmlspecialchars('->').' </b><span>' . self::xoutInternal($val, $dontDie, false) . '</span></li>';
+					$result .= '<li><span style="color:'.$objectTypeColor.';">' . htmlspecialchars(strval($key)) . '</span><b style="color:'.$baseColor.';"> '.htmlspecialchars('->').' </b><span>' . self::xout($val, $dontDie, false) . '</span></li>';
 				}
 			}
 			else
 			{
 				$color = 'black';
-				switch(gettype($val))
+				switch($valType)
 				{
-					case 'string' : $color = 'red'; $val = htmlspecialchars('\'').$val.htmlspecialchars('\''); break;
-					case 'integer' : $color = 'orange'; break;
-					case 'double' : $color = 'teal'; break;
-					case 'resource' : $color = 'black'; break;
-					case 'boolean' : $color = 'green'; $val = ($val === true) ? 'TRUE' : 'FALSE'; break;
-					case 'NULL' : $color = 'grey'; $val = 'NULL'; break;
+					case 'string' : $color = $stringTypeColor; $val = htmlspecialchars('\'').$val.htmlspecialchars('\''); break;
+					case 'integer' : $color = $integerTypeColor; $val = strval($val); break;
+					case 'double' : $color = $doubleTypeColor; $val = strval($val); break;
+					case 'resource' : $color = $resourceTypeColor; $val = 'resource ('.get_resource_type($val).')'; break;
+					case 'resource (closed)' : $color = $resourceClosedTypeColor; $val = 'resource (closed)'; break;
+					case 'boolean' : $color = $booleanTypeColor; $val = ($val === true) ? 'TRUE' : 'FALSE'; break;
+					case 'NULL' : $color = $nullTypeColor; $val = 'NULL'; break;
 				}
-					
+	
 				$result .= '<li>';
 				if(!$isSimpleVar)
 				{
-					if(gettype($value) === 'array')
+					if($valueType === 'array')
 					{
-						$result .= '<span style="color:blue;">[' . htmlspecialchars(strval($key)) . ']</span><b style="color:black;"> '.htmlspecialchars('=>').' </b>';
+						$result .= '<span style="color:'.$arrayTypeColor.';">[' . htmlspecialchars(strval($key)) . ']</span><b style="color:'.$baseColor.';"> '.htmlspecialchars('=>').' </b>';
 					}
-					if(gettype($value) === 'object')
+					if($valueType === 'object')
 					{
-						$result .= '<span style="color:blue;">' . htmlspecialchars(strval($key)) . '</span><b style="color:black;"> '.htmlspecialchars('->').' </b>';
+						$result .= '<span style="color:'.$objectTypeColor.';">' . htmlspecialchars(strval($key)) . '</span><b style="color:'.$baseColor.';"> '.htmlspecialchars('->').' </b>';
 					}
 				}
-				$result .= '<span style="color:'.$color.';">' . htmlspecialchars(strval($val)) . '</span></li>';
+				$result .= '<span style="color:'.$color.';">' . htmlspecialchars($val) . '</span></li>';
 			}
 		}
-		
+	
 		$result .= '</ul>';
-		
+	
 		if(!$isSimpleVar)
 		{
-			switch(gettype($value))
+			switch($valueType)
 			{
 				case 'array' : $result .= htmlspecialchars(']'); break;
 				case 'object' : $result .= htmlspecialchars(')'); break;
 			}
 		}
-		
+	
 		$result .= $initCall ? '</div>' : '';
-		
+	
 		if($initCall) //Finished
 		{
 			echo($result);

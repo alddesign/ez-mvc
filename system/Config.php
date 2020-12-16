@@ -60,7 +60,7 @@ abstract class Config
      * @param string $key
      * @param string $default Default value if key is not found
      * 
-     * @return [type]
+     * @return mixed
      */
     public static function system(string $key = "", $default = "")
     {

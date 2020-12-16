@@ -71,13 +71,15 @@ class View
     /**
      * Creates a child view. Child views can be included into a root view or even other child views.
      * @param string $name
-     * @param View The view in which this child view is included
-     * @param array $data
+     * @param View $parentView The view in which this child view is included
+     * @param bool $inheritData (optional) inherit data from the parent view
+     * @param array $data (optionl) specifiy your own array of data
      * 
      * @return View
      */
-    public static function createChild(string $name, $parentView, array $data = [])
+    public static function createChild(string $name, View $parentView, bool $inheritData = true, array $data = [])
     {
+        $data = $inheritData ? $parentView->data : $data;
         $view = new View($name, $data);
 
         $view->isRootView = false;

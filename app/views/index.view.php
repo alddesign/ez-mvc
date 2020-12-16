@@ -20,4 +20,4 @@ use Alddesign\EzMvc\System\View;
 Come and check out our <a href="<?php Helper::echoUrl("/Product/list") ?>">products</a>
 
 <!-- You can also pass some data to a child view -->
-<?php View::createChild("html-footer", $this, ["footerText" => "Copyright by me..."])->render(); ?> 
+<?php View::createChild("html-footer", $this, false, ["footerText" => "Copyright by me..."])->render(); ?> 

@@ -52,4 +52,4 @@ use Alddesign\EzMvc\System\View;
     </form>
 </table>
 
-<?php View::createChild("html-footer", $this, ["footerText" => "Copyright by me..."])->render(); ?> 
+<?php View::createChild("html-footer", $this, false, ["footerText" => "Copyright by me..."])->render(); ?> 
