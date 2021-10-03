@@ -18,5 +18,6 @@ $GLOBALS["_EZMVC_SYS_CONFIG"] =
     "db-user" => "",
     "db-password" => "",
     "db-options" => null,                       //Example: [PDO::ATTR_PERSISTENT => true]. https://www.php.net/manual/en/pdo.construct.php 
-    "db-error-mode" => PDO::ERRMODE_SILENT      //Specify the way you like to deal with DB Errors. See PDO::ATTR_ERRMODE on https://www.php.net/manual/en/pdo.setattribute.php
+    "db-error-mode" => PDO::ERRMODE_SILENT,     //Specify the way you like to deal with DB Errors. See PDO::ATTR_ERRMODE on https://www.php.net/manual/en/pdo.setattribute.php
+	"version" => "v1.0.0-beta.1"				//Version of ez-mvc (just in case u wanna know)
 ]; 
