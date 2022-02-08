@@ -10,7 +10,7 @@
 - Requires a Webserver with [PHP](https://www.php.net/downloads) 7.1 or higher
 - Requires [PHP Composer](https://getcomposer.org/)
 - Install via Composer: 
-    - Run `composer create-project alddesing/ez-mvc` in the directory where you want ez-mvc to be installed
+    - Run `composer create-project alddesign/ez-mvc=dev-master` in the directory where you want ez-mvc to be installed
     - Run `composer update` in the same directory
 - Change RewriteBase in the `.htaccess` with your `/path-to-ez-mvc/`. This is the path relative to you webserver root where you installed ez-mvc. 
 - Open http://your-host/path-to-ez-mvc/ in your webbrowser
