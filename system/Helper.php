@@ -303,6 +303,15 @@ abstract class Helper
 		return true;
 	}
 
+	/** 
+	 * Returns the value of a session variable. 
+	 * @return mixed|bool FALSE if the session variable doesnt exist
+	 */
+	public static function sessionVal(string $name, $default = false)
+	{
+		return isset($_SESSION[$name]) ? $_SESSION[$name] : $default;
+	}
+
 	/**
 	 * Redirects to given url. 
 	 * 

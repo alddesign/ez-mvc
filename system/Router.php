@@ -31,15 +31,23 @@ abstract class Router
             Helper::ex('Invalid URL "%s".', self::$originalRequestUrl);
         }
 
-        if(!method_exists(self::CONTROLLER_NAMESPACE . self::$controller, "isController"))
+        if(!method_exists(self::CONTROLLER_NAMESPACE . self::$controller, 'isController'))
         {
             Helper::ex('Invalid controller "%s".', self::$controller);
         }
 
-        $result = call_user_func(sprintf('%s%s::%s', self::CONTROLLER_NAMESPACE, self::$controller, self::$action), self::$id, self::$params); //Redirect to controller action
-        $restype = gettype($result);
+        //onRequest
+        $result = call_user_func([self::CONTROLLER_NAMESPACE . self::$controller, 'onRequest'], self::$action,  self::$id, self::$params);
+        if($result === false)
+        {
+            return;
+        }
 
-        if($restype === 'string' || $restype === 'double' || $restype === 'integer' || $restype === 'boolean')
+        //call to controller action method
+        $result = call_user_func([self::CONTROLLER_NAMESPACE . self::$controller, self::$action], self::$id, self::$params); //Redirect to controller action
+        $resultType = gettype($result);
+
+        if($resultType === 'string' || $resultType === 'double' || $resultType === 'integer' || $resultType === 'boolean')
         {
             echo $result;
         }

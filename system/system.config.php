@@ -7,10 +7,11 @@
  */
 $GLOBALS["_EZMVC_SYS_CONFIG"] =
 [
-    "app-name" => "Sample App",                 //The name of your app
+    "app-name" => "EZ MVC Sample App",          //The name of your app
     "base-url" => "http://localhost/ez-mvc",    //Them url pointing to the root directory of EZ-MVC (where the index.php is located)
     "default-controller" => "Main",             //The default controller when none is specified
     "default-action" => "index",                //The default action when none is specified
+    "default-timezone" => "Europe/Vienna",      //See: https://www.php.net/manual/de/timezones.php
     "db-driver" => "sqlite",                    //"mysql", "sqlite" and "sqlsrv" are supported for now. https://www.php.net/manual/en/pdo.drivers.php 
     "db-name" => dirname(__DIR__) . "/app/sample-database.sqlite",
     "db-host" => "",

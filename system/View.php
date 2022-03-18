@@ -20,6 +20,9 @@ class View
     /** @var array */
     public $data = [];
 
+    /** @var array Data which is shared across all views. Will be overridden if sames keys are used in regular data arrays. */
+    public static $sharedData = [];
+
     private const VIEWPATH = __DIR__."/../app/views/";
 
     /**
@@ -46,7 +49,7 @@ class View
         }
 
         $this->name = $name;
-        $this->data = $data;
+        $this->data = Helper::e(View::$sharedData)? $data : array_merge(View::$sharedData, $data);
     }
 
     /**
