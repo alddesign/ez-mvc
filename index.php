@@ -8,6 +8,9 @@ require ($autoloader); //using composers autoloader file
 
 session_start();
 
+//Loads the config
+Alddesign\EzMvc\System\Config::load();
+
 //Set default timezone as soon as possible
 date_default_timezone_set(Alddesign\EzMvc\System\Config::system('default-timezone', 'UTC'));
 

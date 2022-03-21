@@ -4,13 +4,13 @@
  * Remember: this here is not a database.
  * Do not rename this file
  */
-$GLOBALS["_EZMVC_APP_CONFIG"] = //Do not rename this key
+$GLOBALS['_EZMVC_APP_CONFIG'] = //Do not rename this key
 [
-    "title" => "Welcome to EZ-MVC.",
-    "captions" =>
+    'title' => 'Welcome to EZ-MVC.',
+    'captions' =>
     [
-        "id" => "ID",
-        "price" => 'Price [$]',
-        "name" => "Name"
+        'id' => 'ID',
+        'price' => 'Price [$]',
+        'name' => 'Name'
     ]
 ];

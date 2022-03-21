@@ -2,8 +2,6 @@
 declare(strict_types = 1);
 namespace Alddesign\EzMvc\System;
 
-use Exception;
-
 /**
  * View are used to display data.
  */
@@ -12,18 +10,18 @@ class View
     /** @var bool */
     public $isRootView = false;
     /** @var string */
-    public $path = "";
+    public $path = '';
     /** @var View[] */
     public $parentViews = [];
     /** @var string */
-    public $name = "";
+    public $name = '';
     /** @var array */
     public $data = [];
 
     /** @var array Data which is shared across all views. Will be overridden if sames keys are used in regular data arrays. */
     public static $sharedData = [];
 
-    private const VIEWPATH = __DIR__."/../app/views/";
+    private const VIEWPATH = __DIR__.'/../app/views/';
 
     /**
      * Creates a new View
@@ -126,6 +124,6 @@ class View
     public function render()
     {
         extract($this->data);
-        include(self::VIEWPATH . $this->name . ".view.php");
+        include(self::VIEWPATH . $this->name . '.view.php');
     }
 }

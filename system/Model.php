@@ -2,10 +2,7 @@
 declare(strict_types = 1);
 namespace Alddesign\EzMvc\System;
 
-use Exception;
 use PDO;
-use PDOQuery;
-use PDOStatement;
 
 /**
  * The model handles the DB connetion
@@ -18,36 +15,36 @@ abstract class Model
 
     private static function connect()
     {
-        $dsn = "";
-        switch(Config::system("db-driver"))
+        $dsn = '';
+        switch(Config::system('db-driver'))
         {
-            case "sqlite": 
+            case 'sqlite': 
             {
                 self::$delimiters = ['"','"'];
-                $dsn = sprintf('sqlite:%s', Config::system("db-name")); 
+                $dsn = sprintf('sqlite:%s', Config::system('db-name')); 
                 break;
             }
             case "sqlsrv": 
             {
                 self::$delimiters = ['[',']'];
-                $port = Config::system("db-port", 0);
-                $port = Helper::e($port, true) ? "" : "," . $port;
-                $dsn = sprintf('sqlsrv:Server=%s%s;Database=%s', Config::system("db-host"), $port, Config::system("db-name"));
+                $port = Config::system('db-port', 0);
+                $port = Helper::e($port, true) ? '' : '.' . $port;
+                $dsn = sprintf('sqlsrv:Server=%s%s;Database=%s', Config::system('db-host'), $port, Config::system('db-name'));
                 break;
             }
             case "mysql": 
             {
                 self::$delimiters = ['`','`'];
-                $port = Config::system("db-port", 0);
+                $port = Config::system('db-port', 0);
                 $port = Helper::e($port, true) ? "" : sprintf(';port=%s', $port);
-                $dsn = sprintf('sqlsrv:host=%s%s;dbname=%s', Config::system("db-host"), $port, Config::system("db-name"));
+                $dsn = sprintf('sqlsrv:host=%s%s;dbname=%s', Config::system('db-host'), $port, Config::system('db-name'));
                 break;
             }
-            default : Helper::ex('Unsupported DB driver "%s".', Config::system("db-driver"));
+            default : Helper::ex('Unsupported DB driver "%s".', Config::system('db-driver'));
         }
 
-        self::$pdo = new PDO($dsn, Config::system("db-user"), Config::system("db-password"), Config::system("db-options", null));
-        self::$pdo->setAttribute(PDO::ATTR_ERRMODE, Config::system("db-error-mode", PDO::ERRMODE_SILENT));
+        self::$pdo = new PDO($dsn, Config::system('db-user'), Config::system('db-password'), Config::system('db-options', null));
+        self::$pdo->setAttribute(PDO::ATTR_ERRMODE, Config::system('db-error-mode', PDO::ERRMODE_EXCEPTION));
     }
 
     /**
@@ -93,7 +90,7 @@ abstract class Model
      */
     protected static function formatErrorInfo(array $errorInfo)
     {
-        if($errorInfo[0] === "00000")
+        if($errorInfo[0] === '00000')
         {
             return "";
         }
