@@ -11,6 +11,11 @@ session_start();
 //Loads the config
 Alddesign\EzMvc\System\Config::load();
 
+//Error reporting & display
+ini_set('display_errors', Alddesign\EzMvc\System\Config::system('php-display-errors', 'On'));
+ini_set('display_startup_errors', Alddesign\EzMvc\System\Config::system('php-display-startup-errors', 'On'));
+ini_set('error_reporting', Alddesign\EzMvc\System\Config::system('php-error-reporting', E_ALL));
+
 //Set default timezone as soon as possible
 date_default_timezone_set(Alddesign\EzMvc\System\Config::system('default-timezone', 'UTC'));
 

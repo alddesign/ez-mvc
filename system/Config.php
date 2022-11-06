@@ -4,13 +4,15 @@ namespace Alddesign\EzMvc\System;
 
 abstract class Config
 {
-    
+    private static $loaded = false;
+
     /**
      * Loads a value from the app.config.php. You can access the config via the dot syntax (separating keys with a '.')
      * 
      * ```php
      * //Example
      * Config::get('captions.price');
+     * //Is the same as
      * Config::get('captions')['price'];
      * ```
      * @param string $key
@@ -28,21 +30,22 @@ abstract class Config
         }
 
         //Try key as literal
-        if(isset($_EZMVC_APP_CONFIG[$key]))
+        if(array_key_exists($key, $_EZMVC_APP_CONFIG))
         {
             return $_EZMVC_APP_CONFIG[$key];
         }
 
         //Try the dot syntax
-        $keys = explode('.', $key);
+        $dotkeys = explode('.', $key);
         $value = $_EZMVC_APP_CONFIG;
-        foreach($keys as $k)
+        foreach($dotkeys as $dotkey)
         {
-            if(!isset($value[$k]))
+            if(!is_array($value) || !array_key_exists($dotkey, $value))
             {
                 return $default;
             }
-            $value = $value[$k];
+
+            $value = $value[$dotkey];
         }
 
         return $value;
@@ -66,29 +69,40 @@ abstract class Config
         }
 
         //Try key as literal
-        if(isset($_EZMVC_SYS_CONFIG[$key]))
+        if(array_key_exists($key, $_EZMVC_SYS_CONFIG))
         {
             return $_EZMVC_SYS_CONFIG[$key];
         }
 
         //Try the dot syntax
-        $keys = explode('.', $key);
+        $dotkeys = explode('.', $key);
         $value = $_EZMVC_SYS_CONFIG;
-        foreach($keys as $k)
+        foreach($dotkeys as $dotkey)
         {
-            if(!isset($value[$k]))
+            if(!is_array($value) || !array_key_exists($dotkey, $value))
             {
                 return $default;
             }
-            $value = $value[$k];
+            $value = $value[$dotkey];
         }
 
         return $value;
     }
 
+    /**
+     * Loads the config files into the global vars
+     * 
+     * @return void
+     */
     public static function load()
     {
-        require_once __DIR__ . '/system.config.php';
-        require_once dirname(__DIR__) . '/app/config/app.config.php';
+        if(!self::$loaded)
+        {
+            $GLOBALS['_EZMVC_SYS_CONFIG'] = require __DIR__ . '/system.config.php'; //Load config file
+            $GLOBALS['_EZMVC_SYS_CONFIG'] = is_array($GLOBALS['_EZMVC_SYS_CONFIG']) ? $GLOBALS['_EZMVC_SYS_CONFIG'] : []; //Make sure its an array
+
+            $GLOBALS['_EZMVC_APP_CONFIG'] = require dirname(__DIR__) . '/app/config/app.config.php';
+            $GLOBALS['_EZMVC_APP_CONFIG'] = is_array($GLOBALS['_EZMVC_APP_CONFIG']) ? $GLOBALS['_EZMVC_APP_CONFIG'] : [];
+        }
     }
 }

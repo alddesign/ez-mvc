@@ -4,31 +4,38 @@ namespace Alddesign\EzMvc\Models;
 
 use Alddesign\EzMvc\System\Helper;
 use Alddesign\EzMvc\System\Model;
+use Exception;
 use \PDO;
 
 abstract class DefaultModel extends Model
 {
-    /** @return array|bool */
+    /**
+     * Loads alls the products from the database
+     *  
+     * @return array 
+     */
     public static function getProducts()
     {
-        /*
-        Use the PDO object to access your database (defined in system/system.config.php)
-        */
+        //Use the PDO object to access your database (defined in system/system.config.php)
         $pdo = self::getPDO();
-        $result = $pdo->query('SELECT * FROM products;', PDO::FETCH_ASSOC);
         
-        if($result === false)
+        /** @var \PDOStatement $statement */
+        $statement = $pdo->query('SELECT * FROM products;', PDO::FETCH_ASSOC);
+        
+        if($statement !== false)
         {
-            return [];
-        }
-        else
-        {
-            return $result;
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
         }
 
+        return [];
     }
 
-    /** @return array|bool */
+    /**
+     * Loads a single product from the database
+     * This could be used to create a detailed product page. Here its just to demonstrate how to load a single table row from the database.
+     *  
+     * @return array|bool 
+     */
     public static function getProduct($id)
     {
         /** @var PDO */
@@ -46,30 +53,28 @@ abstract class DefaultModel extends Model
     }
 
     /**
-     * Update data
+     * Set the status of a product
+     * 
      * @return bool
      */
     public static function setProductActiveInactive(int $id, int $active)
     {
-        $statement = self::getPDO()->prepare('UPDATE products SET active = ? WHERE id = ?;');
-        $params = [$active, $id];
+        $pdo = self::getPDO();
 
-        return $statement->execute($params);   
+        $statement = $pdo->prepare('UPDATE products SET active = ? WHERE id = ?;');
+        $params = [$active, $id];
+        return $statement->execute($params); 
     }
 
-        /**
-     * Update data
+    /**
+     * Adds a new Product to the database
+     * 
      * @return bool
      */
     public static function addProduct(int $id, string $name, float $price, int $active = 0)
     {
+        //We forget about error handling, to keep this example simple
         $statement = self::getPDO()->prepare('INSERT INTO products (id,name,price,active) VALUES(?,?,?,?)');
-
-        if(!$statement->execute([$id, $name, $price, $active]))
-        {
-            return self::formatErrorInfo($statement->errorInfo(), "Error while creating new Product");
-        } 
-
-        return true;
+        return $statement->execute([$id,$name,$price,$active]);
     }
 }

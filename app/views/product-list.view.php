@@ -30,11 +30,11 @@ use Alddesign\EzMvc\System\View;
             <td><?php echo $id; ?></td>
             <td><?php echo $product["name"]; ?></td>
             <td><?php echo $product["price"]; ?></td>
-            <?php if($product["active"] === "1"): ?>
+            <?php if($product["active"] == 1): ?>
                 <td><span style="color: green;">active</span></td>
                 <td><a href="<?php echo $deactivateUrl ?>">deactivate product</a></td>
             <?php endif; ?>
-            <?php if($product["active"] !== "1"): ?>
+            <?php if($product["active"] != 1): ?>
                 <td><span style="color: red;">in-active</span></td>
                 <td><a href="<?php echo $activateUrl ?>">activate product</a></td>
             <?php endif; ?>

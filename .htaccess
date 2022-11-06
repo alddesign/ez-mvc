@@ -1,6 +1,8 @@
-Header set Access-Control-Allow-Origin "*"
 RewriteEngine On
+#Define your rewrite base here based on your base URL. 
+#If base URL is like http://localhost/ez-mvc/ then:
 RewriteBase /ez-mvc/
+#If base URL is like http://localhost/ then:
 #RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
