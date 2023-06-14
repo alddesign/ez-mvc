@@ -21,7 +21,7 @@ class View
     /** @var array Data which is shared across all views. Will be overridden if sames keys are used in regular data arrays. */
     public static $sharedData = [];
 
-    private const VIEWPATH = __DIR__.'/../app/views/';
+    private const VIEWPATH = __DIR__ . '/../app/views/';
 
     /**
      * Creates a new View
@@ -31,6 +31,7 @@ class View
      */
     private function __construct(string $name, array $data = [])
     {
+        
         if(!is_string($name) || !preg_match('/^[a-zA-Z0-9_-]+$/', $name))
         {
             Helper::ex('Invalid view name "%s". Allowed characters: a-z,A-Z,0-9,_,-', $name);
@@ -41,13 +42,13 @@ class View
             Helper::ex('View data needs to be of type array.');
         }
 
-        if(!file_exists(self::VIEWPATH . $name . ".view.php"))
+        if(!file_exists(self::VIEWPATH . $name . '.view.php'))
         {
             Helper::ex('View "%s" not found.', $name);
         }
 
         $this->name = $name;
-        $this->data = Helper::e(View::$sharedData)? $data : array_merge(View::$sharedData, $data);
+        $this->data = Helper::e(View::$sharedData) ? $data : array_merge(View::$sharedData, $data);
     }
 
     /**
@@ -63,7 +64,7 @@ class View
 
         $view->isRootView = true;
         $view->path = '/'.$name;
-        $view->parentViews = [$view];
+        $view->parentViews = [];
         $view->isRootView = true;
 
         return $view;
@@ -85,7 +86,7 @@ class View
 
         $view->isRootView = false;
         $view->path = $parentView->path.'/'.$name;
-        $view->parentViews = array_merge($parentView->parentViews, [$view]);
+        $view->parentViews = array_merge($parentView->parentViews, [$parentView]);
         $view->isRootView = false;
 
         return $view;
@@ -98,7 +99,7 @@ class View
      */
     public function getRootView()
     {
-        return $this->parentViews[0];
+        return $this->isRootView ? $this : $this->parentViews[0];
     }
 
     /**
@@ -111,7 +112,7 @@ class View
     public function getParentView(int $level = 0)
     {
         $c = count($this->parentViews) - 1;
-        $level = $level > $c ? $level = 0 : $level;
+        $level = $level > $c ? 0 : $level;
         
         return $this->parentViews[$c - $level];
     }

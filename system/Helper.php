@@ -118,26 +118,16 @@ abstract class Helper
 	}
 
 	/** 
-	 * Shorthand call of throw new Exception(); with up to 8 placeholders 
+	 * Shorthand call of **throw new Exception();** with placeholders.
 	 * 
 	 * ```
 	 * //Example usage:
 	 * Helper::ex("%d errors while trying to delete user '%s'.", 4, "admin"); 
 	 * ```
-	 * 
-	 * @param string $message The Exception message to show
-	 * @param mixed $p1 (optional) placeholder
-	 * @param mixed $p2 (optional) placeholder
-	 * @param mixed $p3 (optional) placeholder
-	 * @param mixed $p4 (optional) placeholder
-	 * @param mixed $p5 (optional) placeholder
-	 * @param mixed $p6 (optional) placeholder
-	 * @param mixed $p7 (optional) placeholder
-	 * @param mixed $p8 (optional) placeholder
 	 */
-	public static function ex(string $message, $p1 = '', $p2 = '', $p3 = '', $p4 = '', $p5 = '', $p6 = '', $p7 = '', $p8 = '')
+	public static function ex(string $message, ...$params)
 	{
-		throw new \Exception(sprintf($message, $p1, $p2, $p3, $p4, $p5, $p6, $p7, $p8));
+		throw new \Exception(vsprintf($message, $params));
 	}
 
 	/** 
@@ -149,19 +139,15 @@ abstract class Helper
 	 */
 	public static function e($var, bool $zeroIsEmpty = false)
 	{
-		$type = gettype($var);
-		switch($type)
-		{
-			case 'boolean'	: return false;
-			case 'integer'	: return ($zeroIsEmpty && $var === 0) ? true : false;
-			case 'double'	: return ($zeroIsEmpty && $var === 0.0) ? true : false;
-			case 'string'	: return ($var === '');
-			case 'array'	: return ($var === []);
- 			case 'object'	: return ($var == (object)[]);
-			case 'resource'	: return false;
-			case 'NULL'		: return true;
-			default			: return false;
-		}
+		return
+		(
+			($zeroIsEmpty && $var === 0) ||
+			($zeroIsEmpty && $var === 0.0) ||
+			$var === '' ||
+			$var === [] ||
+			$var === (object)[] ||
+			$var === null
+		);
 	}
 
 	/**
@@ -257,9 +243,9 @@ abstract class Helper
 
 	/** 
 	 * Checks if a $_GET request variable exists and stores its value in $outVar.
-	 * @return bool FALSE if variable exists, otherwise FALSE
+	 * @return bool TRUE if variable exists, otherwise FALSE
 	 */
-	public static function get(string $name, &$outVar, $default = "")
+	public static function get(string $name, &$outVar, $default = '')
 	{
 		if(!isset($_GET[$name]) || Helper::e($_GET[$name]))
 		{
@@ -273,9 +259,9 @@ abstract class Helper
 
 	/** 
 	 * Checks if a $_POST request variable exists and stores its value in $outVar.
-	 * @return bool FALSE if variable exists, otherwise FALSE
+	 * @return bool TRUE if variable exists, otherwise FALSE
 	 */
-	public static function post(string $name, &$outVar, $default = "")
+	public static function post(string $name, &$outVar, $default = '')
 	{
 		if(!isset($_POST[$name]) || Helper::e($_POST[$name]))
 		{
@@ -289,9 +275,9 @@ abstract class Helper
 
 	/** 
 	 * Checks if a session variable exists and stores its value in $outVar.
-	 * @return bool FALSE if variable exists, otherwise FALSE
+	 * @return bool TRUE if variable exists, otherwise FALSE
 	 */
-	public static function session(string $name, &$outVar, $default = "")
+	public static function session(string $name, &$outVar, $default = '')
 	{
 		if(!isset($_SESSION[$name]) || Helper::e($_SESSION[$name]))
 		{
@@ -305,7 +291,7 @@ abstract class Helper
 
 	/** 
 	 * Returns the value of a session variable. 
-	 * @return mixed|bool FALSE if the session variable doesnt exist
+	 * @return mixed The session variable or $default
 	 */
 	public static function sessionVal(string $name, $default = false)
 	{

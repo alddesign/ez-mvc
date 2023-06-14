@@ -4,7 +4,6 @@ namespace Alddesign\EzMvc\Models;
 
 use Alddesign\EzMvc\System\Helper;
 use Alddesign\EzMvc\System\Model;
-use Exception;
 use \PDO;
 
 abstract class DefaultModel extends Model

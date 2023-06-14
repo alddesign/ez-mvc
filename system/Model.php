@@ -11,67 +11,44 @@ abstract class Model
 {
     /** @var PDO */
     private static $pdo = null;
-    private static $delimiters = [];
 
     private static function connect()
     {
         $dsn = '';
-        switch(Config::system('db-driver'))
+        $dbDriver = Config::systemNeed('db-driver');
+        switch($dbDriver)
         {
             case 'sqlite': 
             {
-                self::$delimiters = ['"','"'];
-                $dsn = sprintf('sqlite:%s', Config::system('db-name')); 
+                $dsn = sprintf('sqlite:%s', Config::systemNeed('db-name')); 
                 break;
             }
-            case "sqlsrv": 
+            case 'sqlsrv': 
             {
-                self::$delimiters = ['[',']'];
                 $port = Config::system('db-port', 0);
-                $port = Helper::e($port, true) ? '' : '.' . $port;
-                $dsn = sprintf('sqlsrv:Server=%s%s;Database=%s', Config::system('db-host'), $port, Config::system('db-name'));
+                $port = Helper::e($port, true) ? '' : sprintf(',%s', $port);
+                $dsn = sprintf('sqlsrv:Server=%s%s;Database=%s', Config::systemNeed('db-host'), $port, Config::systemNeed('db-name'));
                 break;
             }
-            case "mysql": 
+            case 'mysql': 
             {
-                self::$delimiters = ['`','`'];
                 $port = Config::system('db-port', 0);
-                $port = Helper::e($port, true) ? "" : sprintf(';port=%s', $port);
-                $dsn = sprintf('sqlsrv:host=%s%s;dbname=%s', Config::system('db-host'), $port, Config::system('db-name'));
+                $port = Helper::e($port, true) ? '' : sprintf(';port=%s', $port);
+                $dsn = sprintf('mysql:host=%s%s;dbname=%s', Config::systemNeed('db-host'), $port, Config::systemNeed('db-name'));
                 break;
             }
-            default : Helper::ex('Unsupported DB driver "%s".', Config::system('db-driver'));
+            default : Helper::ex('Unsupported DB driver "%s".', $dbDriver);
         }
 
-        self::$pdo = new PDO($dsn, Config::system('db-user'), Config::system('db-password'), Config::system('db-options', null));
+        self::$pdo = new PDO($dsn, Config::system('db-user', null), Config::system('db-password', null), Config::system('db-options', null));
         self::$pdo->setAttribute(PDO::ATTR_ERRMODE, Config::system('db-error-mode', PDO::ERRMODE_EXCEPTION));
-    }
-
-    /**
-     * Encloses a value between the DB spcific field & table name delimiters. 
-     * @param string $value
-     * 
-     * @return string
-     */
-    protected static function delimit(string $value)
-    {
-        return sprintf('%s%s%s', self::$delimiters[0], $value, self::$delimiters[1]);
-    }
-
-    /**
-     * Returns the DB spcific field & table name delimiters.
-     * @return string[]
-     */
-    protected static function getDelimiters()
-    {
-        return self::$delimiters;
     }
 
     /**
      * Connets to the DB and returns the PDO object.
      * @return PDO
      */
-    protected static function getPdo()
+    public static function getPdo()
     {
         if(self::$pdo === null)
         {
@@ -92,7 +69,7 @@ abstract class Model
     {
         if($errorInfo[0] === '00000')
         {
-            return "";
+            return '';
         }
         else
         {

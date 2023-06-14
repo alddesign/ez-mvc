@@ -4,24 +4,27 @@ namespace Alddesign\EzMvc\System;
 
 abstract class Config
 {
-    private static $loaded = false;
+    private static bool $loaded = false;
+    private static bool $found = false;
 
     /**
-     * Loads a value from the app.config.php. You can access the config via the dot syntax (separating keys with a '.')
+     * Loads a value from the app config (app.config.php). 
+     * 
+     * @param string $key The key for the config value. Supports dot syntax - see example. If $key is an empty string '' the whole app config will be returned.
+     * @param string $default Retruns this default value, if no config value for $key was found.
+     * 
+     * @return mixed The config value for $key or $default if no config value for $key was found.
      * 
      * ```php
-     * //Example
-     * Config::get('captions.price');
+     * //Example of the dot syntax: these two call do the same.
+     * $priceCaption = Config::get('captions.price');
      * //Is the same as
-     * Config::get('captions')['price'];
+     * $priceCaption = Config::get('captions')['price'];
      * ```
-     * @param string $key
-     * @param string $default Default value if key is not found
-     * 
-     * @return mixed
      */
     public static function get(string $key = '', $default = '')
     {
+        self::$found = true;
         global $_EZMVC_APP_CONFIG;
 
         if($key === '')
@@ -42,6 +45,7 @@ abstract class Config
         {
             if(!is_array($value) || !array_key_exists($dotkey, $value))
             {
+                self::$found = false;
                 return $default;
             }
 
@@ -51,16 +55,65 @@ abstract class Config
         return $value;
     }
 
+
     /**
-     * Loads a value from the ez-mvc system.config.php. Works the same way as Config::get()
+     * Works the same way as **Config::get()**, but stores the config value in $outVar. Returns if a config value for $key was found.
      * 
-     * @param string $key
-     * @param string $default Default value if key is not found
+     * @param mixed &$outVar The config value will be stored in this variable (pass by reference);
+     * @param string $default Default value for $outVar if no config value for $key was found.
+     * 
+     * @return bool TRUE if a config value for $key was found, otherwise FALSE.
+     */
+    public static function getVar(string $key, &$outVar, $default = '')
+    {
+        $outVar = self::get($key, $default);
+
+        return self::$found;
+    }
+
+    /**
+     * Works the same way as **Config::get()**, but throws an exception if no config value for $key was found.
+     * 
+     * @param bool $throwErrorIfEmpty Also throw an error if the config value is empty. 0 is not empty.
+     * @throws Exception if no config value for $key was found.
      * 
      * @return mixed
      */
+    public static function need(string $key, bool $throwErrorIfEmpty = false)
+    {
+        $value = self::get($key, '');
+
+        if(!self::$found)
+        {
+            Helper::ex('Missing config value. Key "%s".', $key);
+        }
+
+        if($throwErrorIfEmpty && Helper::e($value))
+        {
+            Helper::ex('The config value must not be empty. Key "%s".', $key);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Checks if a config value for $key exists.
+     * 
+     * @return bool
+     */
+    public static function has(string $key)
+    {
+        self::get($key, '');
+
+        return self::$found;
+    }
+
+    /**
+     * Works the same way as **Config::get()**, but for the ez-mvc system config (system/system.config.php)
+     */
     public static function system(string $key = '', $default = '')
     {
+        self::$found = true;
         global $_EZMVC_SYS_CONFIG;
 
         if($key === '')
@@ -81,12 +134,55 @@ abstract class Config
         {
             if(!is_array($value) || !array_key_exists($dotkey, $value))
             {
+                self::$found = false;
                 return $default;
             }
             $value = $value[$dotkey];
         }
 
         return $value;
+    }
+
+    /**
+     * Works the same way as **Config::getVar()**, but for the ez-mvc system config (system/system.config.php)
+     */
+    public static function systemVar(string $key, &$outVar, $default = '')
+    {
+        $outVar = self::system($key, $default);
+
+        return self::$found;
+    }
+
+    /**
+     * Works the same way as **Config::need()**, but for the ez-mvc system config (system/system.config.php)
+     */
+    public static function systemNeed(string $key, bool $throwErrorIfEmpty = false)
+    {
+        $value = self::system($key, '');
+
+        if(!self::$found)
+        {
+            Helper::ex('Missing system-config value. Key "%s".', $key);
+        }
+
+        if($throwErrorIfEmpty && Helper::e($value))
+        {
+            Helper::ex('The system-config value must not be empty. Key "%s".', $key);
+        }
+
+        return $value;
+    }
+
+    /**
+     * Works the same way as **Config::has()**, but for the ez-mvc system config (system/system.config.php)
+     * 
+     * @return bool
+     */
+    public static function systemHas(string $key)
+    {
+        self::system($key, '');
+
+        return self::$found;
     }
 
     /**

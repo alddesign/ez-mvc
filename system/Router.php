@@ -45,9 +45,8 @@ abstract class Router
 
         //call to controller action method
         $result = call_user_func([self::CONTROLLER_NAMESPACE . self::$controller, self::$action], self::$id, self::$params); //Redirect to controller action
-        $resultType = gettype($result);
 
-        if($resultType === 'string' || $resultType === 'double' || $resultType === 'integer' || $resultType === 'boolean')
+        if(in_array(gettype($result), ['string','double','integer','boolean']))
         {
             echo $result;
         }
@@ -61,23 +60,23 @@ abstract class Router
     private static function resolveRequestUrl()
     {      
         //Request Url:
-        $url = parse_url(Helper::addTrailingSlash("http://example.com" . urldecode($_SERVER["REQUEST_URI"])));
-        $urlPath = isset($url["path"]) ? $url["path"] : "/";
+        $url = parse_url(Helper::addTrailingSlash('http://example.com' . urldecode($_SERVER['REQUEST_URI'])));
+        $urlPath = isset($url['path']) ? $url['path'] : '/';
         self::$originalRequestUrl = $urlPath;
 
         //Base Url:
-        $baseUrl = parse_url(Helper::addTrailingSlash((string)Config::system("base-url")));
-        $baseUrlPath = isset($baseUrl["path"]) ? $baseUrl["path"] : "/";
+        $baseUrl = parse_url(Helper::addTrailingSlash((string)Config::system('base-url')));
+        $baseUrlPath = isset($baseUrl['path']) ? $baseUrl['path'] : '/';
 
         //Strip base url path from request url path:
-        $urlPath = mb_strpos($urlPath, $baseUrlPath, 0) === 0 ? "/" . mb_substr($urlPath, mb_strlen($baseUrlPath)) : $urlPath;
+        $urlPath = mb_strpos($urlPath, $baseUrlPath, 0) === 0 ? '/' . mb_substr($urlPath, mb_strlen($baseUrlPath)) : $urlPath;
 
         //Split request url path:
-        $urlPathParts = explode("/", $urlPath);
+        $urlPathParts = explode('/', $urlPath);
 
-        self::$controller = isset($urlPathParts[1]) && $urlPathParts[1] !== "" ? $urlPathParts[1] : Config::system("default-controller");
-        self::$action = isset($urlPathParts[2]) && $urlPathParts[2] !== "" ? $urlPathParts[2] : Config::system("default-action");
-        self::$id = isset($urlPathParts[3]) ? $urlPathParts[3] : "";
+        self::$controller = isset($urlPathParts[1]) && $urlPathParts[1] !== '' ? $urlPathParts[1] : Config::system('default-controller');
+        self::$action = isset($urlPathParts[2]) && $urlPathParts[2] !== '' ? $urlPathParts[2] : Config::system('default-action');
+        self::$id = isset($urlPathParts[3]) ? $urlPathParts[3] : '';
         self::$params = isset($urlPathParts[4]) ? array_slice($urlPathParts, 4) : [];
     }
 }

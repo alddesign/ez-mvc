@@ -1,17 +1,24 @@
 <?php
-$autoloader = __DIR__.'/vendor/autoload.php';
-if(!file_exists($autoloader))
+//Set Error defaults to catch early configuration errors:
+ini_set('display_errors', 'On');
+ini_set('display_startup_errors', 'On');
+ini_set('error_reporting', -1);
+
+//Check for autoloder and embed it
+if(!file_exists(__DIR__.'/vendor/autoload.php'))
 {
-    die('Damn, run <b>composer update</b> before using EZ-MVC.<br/>Please, <a href="https://getcomposer.org">get composer.</a> and thank me later.');
+    http_response_code(500);
+    echo 'vendor/autoloader.php not found. Forgot "composer update"?';
+    die;
 }
-require ($autoloader); //using composers autoloader file
+require(__DIR__.'/vendor/autoload.php');
 
 session_start();
 
 //Loads the config
 Alddesign\EzMvc\System\Config::load();
 
-//Error reporting & display
+//Set Error reporting as configured
 ini_set('display_errors', Alddesign\EzMvc\System\Config::system('php-display-errors', 'On'));
 ini_set('display_startup_errors', Alddesign\EzMvc\System\Config::system('php-display-startup-errors', 'On'));
 ini_set('error_reporting', Alddesign\EzMvc\System\Config::system('php-error-reporting', E_ALL));
