@@ -65,7 +65,7 @@ abstract class Helper
 				$color = 'black';
 				switch($valType)
 				{
-					case 'string' : $color = $stringTypeColor; $val = htmlspecialchars('\'').$val.htmlspecialchars('\''); break;
+					case 'string' : $color = $stringTypeColor; $val = '"'.$val.'"'; break;
 					case 'integer' : $color = $integerTypeColor; $val = strval($val); break;
 					case 'double' : $color = $doubleTypeColor; $val = strval($val); break;
 					case 'resource' : $color = $resourceTypeColor; $val = 'resource ('.get_resource_type($val).')'; break;
