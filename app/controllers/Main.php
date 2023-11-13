@@ -3,6 +3,7 @@ declare(strict_types = 1);
 namespace Alddesign\EzMvc\Controllers;
 
 use Alddesign\EzMvc\Models\DefaultModel;
+use Alddesign\EzMvc\System\Config;
 use Alddesign\EzMvc\System\View;
 use Alddesign\EzMvc\System\Controller;
 use Alddesign\EzMvc\System\Helper;
@@ -20,6 +21,18 @@ abstract class Main extends Controller
      */
     public static function index()
     {
+        $vx = filter_var('On', FILTER_VALIDATE_BOOL);
+
+        if($vx === false)
+        {
+            echo "[NOT Bool?]";
+        }
+        else
+        {
+            echo $vx;
+        }
+
+        die;
         //When creating a view from a Controller action, make sure you create a ROOT view (and dont forget to render it!)
         View::createRoot("index")->render();
     }

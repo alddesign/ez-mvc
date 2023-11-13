@@ -242,38 +242,6 @@ abstract class Helper
 	}
 
 	/** 
-	 * Checks if a $_GET request variable exists and stores its value in $outVar.
-	 * @return bool TRUE if variable exists, otherwise FALSE
-	 */
-	public static function get(string $name, &$outVar, $default = '')
-	{
-		if(!isset($_GET[$name]) || Helper::e($_GET[$name]))
-		{
-			$outVar = $default;
-			return false;
-		}
-
-		$outVar = $_GET[$name];
-		return true;
-	}
-
-	/** 
-	 * Checks if a $_POST request variable exists and stores its value in $outVar.
-	 * @return bool TRUE if variable exists, otherwise FALSE
-	 */
-	public static function post(string $name, &$outVar, $default = '')
-	{
-		if(!isset($_POST[$name]) || Helper::e($_POST[$name]))
-		{
-			$outVar = $default;
-			return false;
-		}
-
-		$outVar = $_POST[$name];
-		return true;
-	}
-
-	/** 
 	 * Checks if a session variable exists and stores its value in $outVar.
 	 * @return bool TRUE if variable exists, otherwise FALSE
 	 */

@@ -4,8 +4,15 @@ namespace Alddesign\EzMvc\System;
 
 abstract class Config
 {
+    /** @var array The system config */
+    private static array $sys = [];
+
+    /** @var array The app config */
+    private static array $app = [];
+
     private static bool $loaded = false;
     private static bool $found = false;
+
 
     /**
      * Loads a value from the app config (app.config.php). 
@@ -24,23 +31,23 @@ abstract class Config
      */
     public static function get(string $key = '', $default = '')
     {
+        self::load();
         self::$found = true;
-        global $_EZMVC_APP_CONFIG;
 
         if($key === '')
         {
-            return $_EZMVC_APP_CONFIG;
+            return self::$app;
         }
 
         //Try key as literal
-        if(array_key_exists($key, $_EZMVC_APP_CONFIG))
+        if(array_key_exists($key, self::$app))
         {
-            return $_EZMVC_APP_CONFIG[$key];
+            return self::$app[$key];
         }
 
         //Try the dot syntax
         $dotkeys = explode('.', $key);
-        $value = $_EZMVC_APP_CONFIG;
+        $value = self::$app;
         foreach($dotkeys as $dotkey)
         {
             if(!is_array($value) || !array_key_exists($dotkey, $value))
@@ -113,23 +120,23 @@ abstract class Config
      */
     public static function system(string $key = '', $default = '')
     {
+        self::load();
         self::$found = true;
-        global $_EZMVC_SYS_CONFIG;
 
         if($key === '')
         {
-            return $_EZMVC_SYS_CONFIG;
+            return self::$sys;
         }
 
         //Try key as literal
-        if(array_key_exists($key, $_EZMVC_SYS_CONFIG))
+        if(array_key_exists($key, self::$sys))
         {
-            return $_EZMVC_SYS_CONFIG[$key];
+            return self::$sys[$key];
         }
 
         //Try the dot syntax
         $dotkeys = explode('.', $key);
-        $value = $_EZMVC_SYS_CONFIG;
+        $value = self::$sys;
         foreach($dotkeys as $dotkey)
         {
             if(!is_array($value) || !array_key_exists($dotkey, $value))
@@ -194,11 +201,17 @@ abstract class Config
     {
         if(!self::$loaded)
         {
-            $GLOBALS['_EZMVC_SYS_CONFIG'] = require __DIR__ . '/system.config.php'; //Load config file
-            $GLOBALS['_EZMVC_SYS_CONFIG'] = is_array($GLOBALS['_EZMVC_SYS_CONFIG']) ? $GLOBALS['_EZMVC_SYS_CONFIG'] : []; //Make sure its an array
+            self::$sys = require __DIR__ . '/system.config.php'; //Load config file
+            if(!is_array(self::$sys))
+            {
+                Helper::ex('Config error. system.config.php has to return an array, %s given.', gettype(self::$sys));
+            }
 
-            $GLOBALS['_EZMVC_APP_CONFIG'] = require dirname(__DIR__) . '/app/config/app.config.php';
-            $GLOBALS['_EZMVC_APP_CONFIG'] = is_array($GLOBALS['_EZMVC_APP_CONFIG']) ? $GLOBALS['_EZMVC_APP_CONFIG'] : [];
+            self::$app = require dirname(__DIR__) . '/app/config/app.config.php';
+            if(!is_array(self::$app))
+            {
+                Helper::ex('Config error. app.config.php has to return an array, %s given.', gettype(self::$app));
+            }
         }
     }
 }

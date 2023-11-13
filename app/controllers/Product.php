@@ -6,6 +6,7 @@ use Alddesign\EzMvc\Models\DefaultModel;
 use Alddesign\EzMvc\System\View;
 use Alddesign\EzMvc\System\Controller;
 use Alddesign\EzMvc\System\Helper;
+use Alddesign\EzMvc\System\Request;
 
 /** Another Controller */
 abstract class Product extends Controller
@@ -29,7 +30,7 @@ abstract class Product extends Controller
      * All following url segments are stored in the second parameter of this method(as string array)
      * (you can name these parameters the way out want and you dont have to decalare them, if not needed)
      * 
-     * Normal url parameters (?param=1&status=on for example) can be access by Helper::get() or by traditional $_GET;
+     * Normal url parameters (?param=1&status=on for example) can be access by Request::get() or by traditional $_GET;
      */
     public static function card($id)
     {   
@@ -68,7 +69,7 @@ abstract class Product extends Controller
          * Check if all post parameters are set & have a value. Also they will be assigned to a variable.
          * Isnt that EZ?
          */
-        if(!Helper::post("id", $id) || !Helper::post("name", $name) || !Helper::post("price", $price))
+        if(!Request::post("id", $id) || !Request::post("name", $name) || !Request::post("price", $price))
         {
             return "Missing data!";
         }
