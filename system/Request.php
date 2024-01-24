@@ -155,7 +155,7 @@ abstract class Request
 	 */
 	public static function postBool(string $name, bool &$outVar)
 	{
-		$result = self::get($name, $outVar2);
+		$result = self::post($name, $outVar2);
 		$outVar2 = gettype($outVar2) === 'string' ? strtolower($outVar2) : $outVar2;
 		$outVar = in_array($outVar2, [true,1,'yes','on','true','1'], true);
 
@@ -171,7 +171,7 @@ abstract class Request
 	 */
 	public static function postVal(string $name, $default = '')
 	{
-		return self::get($name, $value) ? $value : $default; 
+		return self::post($name, $value) ? $value : $default; 
 	}
 
 }

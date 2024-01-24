@@ -212,6 +212,8 @@ abstract class Config
             {
                 Helper::ex('Config error. app.config.php has to return an array, %s given.', gettype(self::$app));
             }
+
+            self::$loaded = true;
         }
     }
 }

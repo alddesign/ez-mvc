@@ -25,5 +25,5 @@ return
     'php-display-errors' => 'On',               //'On' | 'Off'. Specify if PHP shows runtime errors at all. See https://www.php.net/manual/en/errorfunc.configuration.php#ini.display-errors
     'php-display-startup-errors' => 'On',       //'On' | 'Off'. Specify if PHP startup errors. See: https://www.php.net/manual/en/errorfunc.configuration.php#ini.display-startup-errors
     'php-error-reporting' => -1,                //See: https://www.php.net/manual/en/function.error-reporting.php
-    'version' => 'v1.0.0-beta.4'				//Version of ez-mvc (just in case u wanna know)
+    'version' => 'v1.0.0-beta.5'				//Version of ez-mvc (just in case u wanna know)
 ]; 
