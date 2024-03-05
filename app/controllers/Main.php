@@ -21,18 +21,6 @@ abstract class Main extends Controller
      */
     public static function index()
     {
-        $vx = filter_var('On', FILTER_VALIDATE_BOOL);
-
-        if($vx === false)
-        {
-            echo "[NOT Bool?]";
-        }
-        else
-        {
-            echo $vx;
-        }
-
-        die;
         //When creating a view from a Controller action, make sure you create a ROOT view (and dont forget to render it!)
         View::createRoot("index")->render();
     }

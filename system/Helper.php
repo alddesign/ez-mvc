@@ -226,7 +226,7 @@ abstract class Helper
 		}
 		else
 		{
-			return self::removeTrailingSlash(Config::system("base-url")) . self::addStartingSlash($url);
+			return self::removeTrailingSlash(EZ_BASE_URL) . self::addStartingSlash($url);
 		}
 	}
 
@@ -264,6 +264,28 @@ abstract class Helper
 	public static function sessionVal(string $name, $default = false)
 	{
 		return isset($_SESSION[$name]) ? $_SESSION[$name] : $default;
+	}
+
+
+	/**
+	 * Sets a value in the session array
+	 * @param string $name Name of the session value
+	 */
+	public static function sessionSet(string $name, $value)
+	{
+		$_SESSION[$name] = $value;
+	}
+
+	/**
+	 * Unsets an element in the session array
+	 * @param string $name Name of the session value
+	 */
+	public static function sessionUnset(string $name)
+	{
+		if(isset($_SESSION[$name]))
+		{
+			unset($_SESSION[$name]);
+		}
 	}
 
 	/**

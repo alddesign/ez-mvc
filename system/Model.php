@@ -15,33 +15,37 @@ abstract class Model
     private static function connect()
     {
         $dsn = '';
-        $dbDriver = Config::systemNeed('db-driver');
-        switch($dbDriver)
+        $user = Helper::e(EZ_DB_USER, true) || !is_string(EZ_DB_USER) ? null : EZ_DB_USER;
+        $password = Helper::e(EZ_DB_PASSWORD, true) || !is_string(EZ_DB_PASSWORD) ? null : EZ_DB_PASSWORD;
+        $options = Helper::e(EZ_DB_OPTIONS, true) || !is_array(EZ_DB_OPTIONS) ? null : EZ_DB_OPTIONS;
+        $errorMode = Helper::e(EZ_DB_ERROR_MODE, true) || !is_int(EZ_DB_ERROR_MODE) ? PDO::ERRMODE_EXCEPTION : EZ_DB_ERROR_MODE;
+
+        switch(EZ_DB_DRIVER)
         {
             case 'sqlite': 
             {
-                $dsn = sprintf('sqlite:%s', Config::systemNeed('db-name')); 
+                $dsn = sprintf('sqlite:%s', EZ_DB_NAME); 
                 break;
             }
             case 'sqlsrv': 
             {
-                $port = Config::system('db-port', 0);
+                $port = EZ_DB_PORT;
                 $port = Helper::e($port, true) ? '' : sprintf(',%s', $port);
-                $dsn = sprintf('sqlsrv:Server=%s%s;Database=%s', Config::systemNeed('db-host'), $port, Config::systemNeed('db-name'));
+                $dsn = sprintf('sqlsrv:Server=%s%s;Database=%s', EZ_DB_HOST, $port, EZ_DB_NAME);
                 break;
             }
             case 'mysql': 
             {
-                $port = Config::system('db-port', 0);
+                $port = EZ_DB_PORT;
                 $port = Helper::e($port, true) ? '' : sprintf(';port=%s', $port);
-                $dsn = sprintf('mysql:host=%s%s;dbname=%s', Config::systemNeed('db-host'), $port, Config::systemNeed('db-name'));
+                $dsn = sprintf('mysql:host=%s%s;dbname=%s', EZ_DB_HOST, $port, EZ_DB_NAME);
                 break;
             }
-            default : Helper::ex('Unsupported DB driver "%s".', $dbDriver);
+            default : Helper::ex('Unsupported DB driver "%s".', EZ_DB_DRIVER);
         }
 
-        self::$pdo = new PDO($dsn, Config::system('db-user', null), Config::system('db-password', null), Config::system('db-options', null));
-        self::$pdo->setAttribute(PDO::ATTR_ERRMODE, Config::system('db-error-mode', PDO::ERRMODE_EXCEPTION));
+        self::$pdo = new PDO($dsn, $user, $password, $options);
+        self::$pdo->setAttribute(PDO::ATTR_ERRMODE, $errorMode);
     }
 
     /**

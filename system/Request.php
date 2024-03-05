@@ -28,7 +28,7 @@ abstract class Request
 	 *  Same as Request::get() with typecasting to string. 
 	 *  @return bool
 	 */
-	public static function getString(string $name, string &$outVar, string $default = '')
+	public static function getString(string $name, &$outVar, string $default = '')
 	{
 		$result = self::get($name, $outVar, $default);
 		$outVar = strval($outVar);
@@ -41,7 +41,7 @@ abstract class Request
 	 *  If the request parameter cannot be converted to int, $default applies.
 	 *  @return bool
 	 */
-	public static function getInt(string $name, int &$outVar, int $default = 0)
+	public static function getInt(string $name, &$outVar, int $default = 0)
 	{
 		$result = self::get($name, $outVar, $default);
 		$outVar = filter_var($outVar, FILTER_VALIDATE_INT);
@@ -55,7 +55,7 @@ abstract class Request
 	 *  If the request parameter cannot be converted to float, $default applies.
 	 *  @return bool
 	 */
-	public static function getFloat(string $name, float &$outVar, float $default = 0.0)
+	public static function getFloat(string $name, &$outVar, float $default = 0.0)
 	{
 		$result = self::get($name, $outVar, $default);
 		$outVar = filter_var($outVar, FILTER_VALIDATE_FLOAT);
@@ -68,7 +68,7 @@ abstract class Request
 	 *  Same as Request::get() with conversion to bool. true, 1, 'yes', 'on', '1', 'true' will convert to TRUE.
 	 *  @return bool
 	 */
-	public static function getBool(string $name, bool &$outVar)
+	public static function getBool(string $name, &$outVar)
 	{
 		$result = self::get($name, $outVar2);
 		$outVar2 = gettype($outVar2) === 'string' ? strtolower($outVar2) : $outVar2;
@@ -113,7 +113,7 @@ abstract class Request
 	 *  Same as Request::post() with conversion to string. 
 	 *  @return bool
 	 */
-	public static function postString(string $name, string &$outVar, string $default = '')
+	public static function postString(string $name, &$outVar, string $default = '')
 	{
 		$result = self::post($name, $outVar, $default);
 		$outVar = strval($outVar);
@@ -126,7 +126,7 @@ abstract class Request
 	 *  If the request parameter cannot be converted to int, $default applies.
 	 *  @return bool
 	 */
-	public static function postInt(string $name, int &$outVar, int $default = 0)
+	public static function postInt(string $name, &$outVar, int $default = 0)
 	{
 		$result = self::post($name, $outVar, $default);
 		$outVar = filter_var($outVar, FILTER_VALIDATE_INT);
@@ -140,7 +140,7 @@ abstract class Request
 	 *  If the request parameter cannot be converted to float, $default applies.
 	 *  @return bool
 	 */
-	public static function postFloat(string $name, float &$outVar, float $default = 0.0)
+	public static function postFloat(string $name, &$outVar, float $default = 0.0)
 	{
 		$result = self::post($name, $outVar, $default);
 		$outVar = filter_var($outVar, FILTER_VALIDATE_FLOAT);
@@ -153,7 +153,7 @@ abstract class Request
 	 *  Same as Request::get() with conversion to bool. true, 1, 'yes', 'on', '1', 'true' will convert to TRUE.
 	 *  @return bool
 	 */
-	public static function postBool(string $name, bool &$outVar)
+	public static function postBool(string $name, &$outVar)
 	{
 		$result = self::post($name, $outVar2);
 		$outVar2 = gettype($outVar2) === 'string' ? strtolower($outVar2) : $outVar2;

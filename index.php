@@ -1,30 +1,32 @@
 <?php
-//Set Error defaults to catch early configuration errors:
+//Set Error reporting as soon as possible
+ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 'On');
 ini_set('display_startup_errors', 'On');
-ini_set('error_reporting', -1);
 
-//Check for autoloder and embed it
+//Check for autoloder
 if(!file_exists(__DIR__.'/vendor/autoload.php'))
 {
     http_response_code(500);
     echo 'vendor/autoloader.php not found. Forgot "composer update"?';
     die;
 }
-require(__DIR__.'/vendor/autoload.php');
 
+//session_set_cookie_params(['samesite' => 'lax']);
 session_start();
 
-//Loads the config
+//Autoloader and config
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/config/config.php';
+
+//Set Error reporting and timezone
+ini_set('error_reporting', EZ_PHP_ERROR_REPORTING);
+ini_set('display_errors', EZ_PHP_DISPLAY_ERRORS);
+ini_set('display_startup_errors', EZ_PHP_DISPLAY_STARTUP_ERRORS);
+date_default_timezone_set(EZ_DEFAULT_TIMEZONE);
+
+//Load config
 Alddesign\EzMvc\System\Config::load();
-
-//Set Error reporting as configured
-ini_set('display_errors', Alddesign\EzMvc\System\Config::system('php-display-errors', 'On'));
-ini_set('display_startup_errors', Alddesign\EzMvc\System\Config::system('php-display-startup-errors', 'On'));
-ini_set('error_reporting', Alddesign\EzMvc\System\Config::system('php-error-reporting', E_ALL));
-
-//Set default timezone as soon as possible
-date_default_timezone_set(Alddesign\EzMvc\System\Config::system('default-timezone', 'UTC'));
 
 //Route request to controller action
 Alddesign\EzMvc\System\Router::routeRequest();

@@ -65,7 +65,7 @@ abstract class Router
         self::$originalRequestUrl = $urlPath;
 
         //Base Url:
-        $baseUrl = parse_url(Helper::addTrailingSlash((string)Config::system('base-url')));
+        $baseUrl = parse_url(Helper::addTrailingSlash(EZ_BASE_URL));
         $baseUrlPath = isset($baseUrl['path']) ? $baseUrl['path'] : '/';
 
         //Strip base url path from request url path:
@@ -74,8 +74,8 @@ abstract class Router
         //Split request url path:
         $urlPathParts = explode('/', $urlPath);
 
-        self::$controller = isset($urlPathParts[1]) && $urlPathParts[1] !== '' ? $urlPathParts[1] : Config::system('default-controller');
-        self::$action = isset($urlPathParts[2]) && $urlPathParts[2] !== '' ? $urlPathParts[2] : Config::system('default-action');
+        self::$controller = isset($urlPathParts[1]) && $urlPathParts[1] !== '' ? $urlPathParts[1] : EZ_DEFAULT_CONTROLLER;
+        self::$action = isset($urlPathParts[2]) && $urlPathParts[2] !== '' ? $urlPathParts[2] : EZ_DEFAULT_ACTION;
         self::$id = isset($urlPathParts[3]) ? $urlPathParts[3] : '';
         self::$params = isset($urlPathParts[4]) ? array_slice($urlPathParts, 4) : [];
     }
