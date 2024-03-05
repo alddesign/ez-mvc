@@ -21,4 +21,4 @@ define('EZ_DB_ERROR_MODE', PDO::ERRMODE_EXCEPTION); //Specify the way you like t
 define('EZ_PHP_DISPLAY_ERRORS', 'On'); //'On' or 'Off'. Specify if PHP shows runtime errors at all. See: https://www.php.net/manual/en/errorfunc.configuration.php#ini.display-errors 
 define('EZ_PHP_DISPLAY_STARTUP_ERRORS', 'On'); //'On' or 'Off'. Specify if PHP shows startup errors. See: https://www.php.net/manual/en/errorfunc.configuration.php#ini.display-startup-errors
 define('EZ_PHP_ERROR_REPORTING', -1); //PHP error reporting level. See: https://www.php.net/manual/en/function.error-reporting.php
-define('EZ_VERSION', 'v1.0.0-beta.4'); //Version of ez-mvc (just in case u wanna know) 
+define('EZ_VERSION', 'v1.0.0'); //Version of ez-mvc (just in case u wanna know)
