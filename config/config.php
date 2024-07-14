@@ -7,8 +7,7 @@
 
 define('EZ_APP_NAME', 'EZ MVC Sample App'); //The name of your app
 define('EZ_BASE_URL', 'http://localhost/ez-mvc/'); //The url pointing to the root directory of EZ-MVC (where the index.php is located)
-define('EZ_DEFAULT_CONTROLLER', 'Main'); //The default controller (class name) when none is specified
-define('EZ_DEFAULT_ACTION', 'index'); //The default action (method name in the controller class) when none is specified
+define('EZ_DEFAULT_URL', '/Main/index'); //A request to the BASE_URL directly resolves to this Url (relative)
 define('EZ_DEFAULT_TIMEZONE', 'Europe/Vienna'); //PHP Timezone. See: https://www.php.net/manual/de/timezones.php 
 define('EZ_DB_DRIVER', 'sqlite');//The DB driver: 'mysql', 'sqlite' and 'sqlsrv' are supported for now. See: https://www.php.net/manual/en/pdo.drivers.php  
 define('EZ_DB_NAME', dirname(__DIR__) . '/app/sample-database.sqlite'); //The name of the database or path to the file in case of sqlite
@@ -21,4 +20,4 @@ define('EZ_DB_ERROR_MODE', PDO::ERRMODE_EXCEPTION); //Specify the way you like t
 define('EZ_PHP_DISPLAY_ERRORS', 'On'); //'On' or 'Off'. Specify if PHP shows runtime errors at all. See: https://www.php.net/manual/en/errorfunc.configuration.php#ini.display-errors 
 define('EZ_PHP_DISPLAY_STARTUP_ERRORS', 'On'); //'On' or 'Off'. Specify if PHP shows startup errors. See: https://www.php.net/manual/en/errorfunc.configuration.php#ini.display-startup-errors
 define('EZ_PHP_ERROR_REPORTING', -1); //PHP error reporting level. See: https://www.php.net/manual/en/function.error-reporting.php
-define('EZ_VERSION', 'v1.0.0'); //Version of ez-mvc (just in case u wanna know)
+define('EZ_VERSION', 'v1.0.0-beta.5'); //Version of ez-mvc (just in case u wanna know)

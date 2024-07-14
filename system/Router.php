@@ -9,11 +9,14 @@ namespace Alddesign\EzMvc\System;
  */
 abstract class Router
 {
-    private static $originalRequestUrl = '';
     private static $controller = '';
     private static $action = '';
     private static $id = '';
     private static $params = [];
+    
+    public static $defaultUrlApplied = false;
+    public static $resolvedPath = '';
+    
     private const CONTROLLER_NAMESPACE = 'Alddesign\\EzMvc\\Controllers\\';
 
 
@@ -24,18 +27,32 @@ abstract class Router
      */
     public static function routeRequest()
     {
-        self::resolveRequestUrl();
+        self::resolveRequestUrl($_SERVER['REQUEST_URI']);
         
-        if(!method_exists(self::CONTROLLER_NAMESPACE . self::$controller, self::$action))
+        //Validate
+        $controllerExists = class_exists(self::CONTROLLER_NAMESPACE . self::$controller);
+        if(!$controllerExists)
         {
-            Helper::ex('Invalid URL "%s".', self::$originalRequestUrl);
+            self::returnError(404, 'Not Found', sprintf('The requested URL "%s" was not found.', $_SERVER['REQUEST_URI']));
+        }
+        $isController = method_exists(self::CONTROLLER_NAMESPACE . self::$controller, 'onRequest');
+        if(!$isController)
+        {
+            self::returnError(500, 'Invalid Controller', sprintf('Class "%s" is not a valid controller.', self::$controller));
         }
 
-        if(!method_exists(self::CONTROLLER_NAMESPACE . self::$controller, 'isController'))
+        $actionExists = method_exists(self::CONTROLLER_NAMESPACE . self::$controller, self::$action);
+        if(!$actionExists)
         {
-            Helper::ex('Invalid controller "%s".', self::$controller);
+            self::returnError(500, 'Invalid Action', sprintf('Action "%s" not found in controller class "%s".', self::$action, self::$controller));
         }
 
+        //Call controller & action
+        self::callControllerAction();
+    }
+
+    private static function callControllerAction()
+    {
         //onRequest
         $result = call_user_func([self::CONTROLLER_NAMESPACE . self::$controller, 'onRequest'], self::$action,  self::$id, self::$params);
         if($result === false)
@@ -45,8 +62,8 @@ abstract class Router
 
         //call to controller action method
         $result = call_user_func([self::CONTROLLER_NAMESPACE . self::$controller, self::$action], self::$id, self::$params); //Redirect to controller action
-
-        if(in_array(gettype($result), ['string','double','integer','boolean']))
+        $resultType = gettype($result);
+        if(in_array($resultType, ['string','double','integer','boolean']))
         {
             echo $result;
         }
@@ -57,26 +74,52 @@ abstract class Router
      * 
      * @return void
      */
-    private static function resolveRequestUrl()
-    {      
-        //Request Url:
-        $url = parse_url(Helper::addTrailingSlash('http://example.com' . urldecode($_SERVER['REQUEST_URI'])));
-        $urlPath = isset($url['path']) ? $url['path'] : '/';
-        self::$originalRequestUrl = $urlPath;
+    private static function resolveRequestUrl(string $requestUri)
+    {
+        //Prepare request url   
+        $reqUrl = Helper::addStartingSlash($requestUri);
+        $reqUrl = urldecode($reqUrl);
+        $reqUrlPath = self::extractUrlPath('http://request.url' . $reqUrl);
 
         //Base Url:
-        $baseUrl = parse_url(Helper::addTrailingSlash(EZ_BASE_URL));
-        $baseUrlPath = isset($baseUrl['path']) ? $baseUrl['path'] : '/';
+        $baseUrl = Helper::addTrailingSlash(EZ_BASE_URL);
+        $baseUrlPath = self::extractUrlPath($baseUrl);
 
         //Strip base url path from request url path:
-        $urlPath = mb_strpos($urlPath, $baseUrlPath, 0) === 0 ? '/' . mb_substr($urlPath, mb_strlen($baseUrlPath)) : $urlPath;
+        $path = mb_strpos($reqUrlPath, $baseUrlPath) === 0 ? '/' . mb_substr($reqUrlPath, mb_strlen($baseUrlPath)) : $reqUrlPath;
 
-        //Split request url path:
-        $urlPathParts = explode('/', $urlPath);
+        //Default URL
+        if($path === '/')
+        {
+            self::$defaultUrlApplied = true;
+            $path = Helper::addStartingSlash(EZ_DEFAULT_URL);
+        }
 
-        self::$controller = isset($urlPathParts[1]) && $urlPathParts[1] !== '' ? $urlPathParts[1] : EZ_DEFAULT_CONTROLLER;
-        self::$action = isset($urlPathParts[2]) && $urlPathParts[2] !== '' ? $urlPathParts[2] : EZ_DEFAULT_ACTION;
-        self::$id = isset($urlPathParts[3]) ? $urlPathParts[3] : '';
-        self::$params = isset($urlPathParts[4]) ? array_slice($urlPathParts, 4) : [];
+        //Split path into Controller, Action and params
+        $pathParts = explode('/', $path);
+        self::$resolvedPath = $path;
+        self::$controller = isset($pathParts[1]) && $pathParts[1] !== '' ? $pathParts[1] : '';
+        self::$action = isset($pathParts[2]) && $pathParts[2] !== '' ? $pathParts[2] : '';
+        self::$id = isset($pathParts[3]) ? $pathParts[3] : '';
+        self::$params = isset($pathParts[4]) ? array_slice($pathParts, 4) : [];
+
+        return;
+    }
+
+    /** @return string */
+    private static function extractUrlPath(string $url)
+    {
+        $parts = parse_url($url);
+        return $parts !== FALSE ? ($parts['path'] ?? '/') : '/';
+    }
+
+    /**
+     * Calls NotFound.html.php with specified http response code, title and message and end the request.
+     */
+    private static function returnError(int $httpResponseCode, string $title, string $message) 
+    {
+        http_response_code($httpResponseCode);
+        require(__DIR__ . '/NotFound.html.php');
+        die;
     }
 }

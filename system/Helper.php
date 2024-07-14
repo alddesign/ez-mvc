@@ -2,6 +2,8 @@
 declare(strict_types = 1);
 namespace Alddesign\EzMvc\System;
 
+require_once(__DIR__ . '/HelperGlobal.php');
+
 abstract class Helper
 {
     /** 
@@ -306,3 +308,4 @@ abstract class Helper
 		die();
 	}
 }
+
