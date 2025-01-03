@@ -6,6 +6,7 @@ require_once(__DIR__ . '/HelperGlobal.php');
 
 abstract class Helper
 {
+	private static $starts = [];
     /** 
 	 * A better implementation of PHP function var_dump();
 	 * 
@@ -197,6 +198,15 @@ abstract class Helper
 		return mb_substr($value, 0, 1) === '/' ? $value : '/'. $value;
 	}
 
+		/**
+	 * Adds a starting slash to an url, path or whatever if it doesnt exist
+	 * @return string
+	 */
+	public static function addStartingAndTrailingSlash(string $value)
+	{
+		return self::addStartingSlash(self::addTrailingSlash($value));
+	}
+
 	/**
 	 * Removes the starting slash of an url, path or whatever if there is one
 	 * @return string
@@ -305,7 +315,33 @@ abstract class Helper
 		$url = $literalUrl ? $url : self::url($url);
 
 		header('Location: ' . $url);
-		die();
+		die;
+	}
+
+	/**
+	 * Short for htmlspecialchars()
+	 */
+	public static function h($text)
+	{
+		return htmlspecialchars((string)$text);
+	}
+
+	public static function start(int $i = 0)
+	{
+		self::$starts[$i] = microtime(true);
+	}
+
+	public static function end(int $i = 0, int $decimals = 3)
+	{
+		$e = microtime(true);
+		if(!isset(self::$starts[$i]))
+		{
+			return -1.0;
+		}
+		
+		$s = self::$starts[$i];
+		unset(self::$starts[$i]);
+		return round($s - $e, $decimals);
 	}
 }
 

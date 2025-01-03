@@ -21,6 +21,12 @@ class View
     /** @var array Data which is shared across all views. Will be overridden if sames keys are used in regular data arrays. */
     public static $sharedData = [];
 
+    /** @var View The root view of the current context */
+    public static $root = null;
+
+    /** @var View The view of the current context */
+    public static $current = null;
+
     private const VIEWPATH = __DIR__ . '/../app/views/';
 
     /**
@@ -66,6 +72,9 @@ class View
         $view->path = '/'.$name;
         $view->parentViews = [];
         $view->isRootView = true;
+        
+        View::$current = $view;
+        View::$root = $view;
 
         return $view;
     }
@@ -88,6 +97,8 @@ class View
         $view->path = $parentView->path.'/'.$name;
         $view->parentViews = array_merge($parentView->parentViews, [$parentView]);
         $view->isRootView = false;
+
+        View::$current = $view;
 
         return $view;
     }
